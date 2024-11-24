@@ -32,15 +32,14 @@ namespace eStavba.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public async Task<IActionResult> AssignAdminRole()
-        {
-            if (User.Identity.Name == "estavba@gmail.com")
-            {
-                await _roleService.AssignRole(User.Identity.Name, "Admin");
-                return Ok("Role Assigned");
-            }
-            return Ok("Role NOT Assigned");
-        }
-
+        // public async Task<IActionResult> AssignAdminRole()
+        // {
+        //     if (User.Identity.Name == "estavba@gmail.com")
+        //     {
+        //         await _roleService.AssignRole(User.Identity.Name, "Admin");
+        //         return Ok("Role Assigned");
+        //     }
+        //     return Ok("Role NOT Assigned");
+        // }
     }
 }

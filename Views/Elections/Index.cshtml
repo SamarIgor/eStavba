@@ -1,38 +1,28 @@
-@model eStavba.Models.ElectionModel
+<h2>Tekoven Admin</h2>
+<p>Ime: @ViewBag.CurrentAdmin</p>
+<p>Vreme na pozicija: @ViewBag.DaysInPosition denovi</p>
 
-<div class="container">
-    <h2>Current Election</h2>
-    @if (ViewBag.CanStartNewElection)
-    {
-        <form method="post" asp-action="StartNewElection">
-            <button type="submit" class="btn btn-primary">Start New Election</button>
-        </form>
-    }
+@{
+    int daysInPosition = 0;
+    int.TryParse(ViewBag.DaysInPosition?.ToString(), out daysInPosition);
+    ElectionState state = ViewBag.election.State;
+    int countYesVotes = ViewBag.countYesVotes;
+    int countNoVotes = ViewBag.countNoVotes;
+}
 
-    @if (Model != null)
-    {
-        <h3>Election Status: @Model.State</h3>
-        <h4>Current House Manager: @Model.CurrentHouseManager</h4>
+@if (daysInPosition >= 90 && (int) state == 3)
+{
+    <form method="post" asp-action="ProposeElection">
+        <button type="submit" class="btn btn-primary">Propose New Election</button>
+    </form>
+}
+else if ((int) state == 1)
+{
+    <p>No votes: @countNoVotes</p>
+    <p>Yes votes: @countYesVotes</p>
+}
 
-        @if (Model.State == ElectionState.Ongoing)
-        {
-            <h3>Vote for Candidates</h3>
-            @foreach (var candidate in Model.Candidates)
-            {
-                <p>@candidate.Name: @candidate.Votes votes</p>
-                <form method="post" asp-action="Vote">
-                    <input type="hidden" name="electionId" value="@Model.Id" />
-                    <input type="hidden" name="candidateId" value="@candidate.Id" />
-                    <button type="submit" class="btn btn-success">Vote</button>
-                </form>
-            }
-
-            <form method="post" asp-action="ProposeCandidate">
-                <h4>Propose Candidate</h4>
-                <input type="hidden" name="electionId" value="@Model.Id" />
-                <input type="text" name="name" placeholder="Candidate Name" class="form-control" />
-                <button type="submit" class="btn btn-primary">Propose</button>
-            </form>
-        }
-    }
-</div>
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-info">@TempData["Message"]</div>
+}

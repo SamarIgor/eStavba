@@ -1,0 +1,18 @@
+<h2>Glasaj za Nov Admin</h2>
+<form method="post" asp-action="SubmitVote">
+    <div class="form-group">
+        <label for="candidate">Izberi Kandidat:</label>
+        <select id="candidate" name="candidateId" class="form-control">
+            @foreach (var candidate in ViewBag.Candidates)
+            {
+                <option value="@candidate.Id">@candidate.UserName</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">Glasaj</button>
+</form>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-info">@TempData["Message"]</div>
+}

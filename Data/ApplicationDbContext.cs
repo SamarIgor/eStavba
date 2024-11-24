@@ -19,6 +19,7 @@ namespace eStavba.Data
         public DbSet<Bills> Bills { get; set; }
         public DbSet<ReportProblemModel> ReportedProblems { get; set; }
         public DbSet<ElectionModel> Elections { get; set; }
-
+        public DbSet<RoleAssignment> RoleAssignments { get; set; }
+        public DbSet<Vote> Votes { get; set; } 
     }
 }
