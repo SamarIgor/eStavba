@@ -8,6 +8,9 @@ using eStavba.Services; // For RegisterConfirmationModel
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Register Swagger services
+builder.Services.AddSwaggerGen();
+
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("AzureConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -17,13 +20,36 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
 builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration.GetSection("SendGrid"));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+// Register identity services, including roles
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = true;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultUI()
+.AddDefaultTokenProviders();
+
+builder.Services.AddScoped<RoleService>(); // Register your RoleService
+
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddSwaggerGen();
-
 var app = builder.Build();
+
+// Define/seed roles
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+    string[] roleNames = { "Admin", "Member" };
+
+    foreach (var roleName in roleNames)
+    {
+        if (!await roleManager.RoleExistsAsync(roleName))
+        {
+            await roleManager.CreateAsync(new IdentityRole(roleName));
+        }
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

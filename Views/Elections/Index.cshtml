@@ -1,0 +1,38 @@
+@model eStavba.Models.ElectionModel
+
+<div class="container">
+    <h2>Current Election</h2>
+    @if (ViewBag.CanStartNewElection)
+    {
+        <form method="post" asp-action="StartNewElection">
+            <button type="submit" class="btn btn-primary">Start New Election</button>
+        </form>
+    }
+
+    @if (Model != null)
+    {
+        <h3>Election Status: @Model.State</h3>
+        <h4>Current House Manager: @Model.CurrentHouseManager</h4>
+
+        @if (Model.State == ElectionState.Ongoing)
+        {
+            <h3>Vote for Candidates</h3>
+            @foreach (var candidate in Model.Candidates)
+            {
+                <p>@candidate.Name: @candidate.Votes votes</p>
+                <form method="post" asp-action="Vote">
+                    <input type="hidden" name="electionId" value="@Model.Id" />
+                    <input type="hidden" name="candidateId" value="@candidate.Id" />
+                    <button type="submit" class="btn btn-success">Vote</button>
+                </form>
+            }
+
+            <form method="post" asp-action="ProposeCandidate">
+                <h4>Propose Candidate</h4>
+                <input type="hidden" name="electionId" value="@Model.Id" />
+                <input type="text" name="name" placeholder="Candidate Name" class="form-control" />
+                <button type="submit" class="btn btn-primary">Propose</button>
+            </form>
+        }
+    }
+</div>

@@ -18,6 +18,7 @@ namespace eStavba.Data
         public DbSet<AnnouncementModel> Announcement { get; set; }
         public DbSet<Bills> Bills { get; set; }
         public DbSet<ReportProblemModel> ReportedProblems { get; set; }
+        public DbSet<ElectionModel> Elections { get; set; }
 
     }
 }
