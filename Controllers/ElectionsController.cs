@@ -40,6 +40,7 @@ namespace eStavba.Controllers
                         .CountAsync();
 
             ViewBag.election = lastElection;
+            ViewBag.endDate = lastElection.EndDate;
 
             if (lastElection.State == ElectionState.YesNo) {
                 if (hasVoted > 0) {
@@ -120,6 +121,7 @@ namespace eStavba.Controllers
                 };
 
                 ViewBag.election = election;
+                ViewBag.endDate = election.EndDate;
 
                 _context.Elections.Add(election);
                 await _context.SaveChangesAsync();
@@ -137,6 +139,7 @@ namespace eStavba.Controllers
                 .FirstOrDefaultAsync();
             
             ViewBag.election = lastElection;
+            ViewBag.endDate = lastElection.EndDate;
 
             var currentUser = await _userManager.GetUserAsync(User);
 

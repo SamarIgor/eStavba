@@ -20,123 +20,25 @@
     }
 </style>
 
-<style>
-
-    h2 {
-        text-align: center;
-    }
-
-    form {
-        display: grid;
-        gap: 10px;
-        max-width: 400px;
-        margin: auto;
-    }
-
-    label {
-        display: block;
-        margin-bottom: 5px;
-    }
-
-    input,
-    textarea {
-        width: 100%;
-        padding: 8px;
-        box-sizing: border-box;
-        resize: none;
-    }
-
-        textarea[name="Content"] {
-            resize: none;
-            height: 100px;
-        }
-
-
-
-    button {
-        padding: 10px;
-    }
-
-    .heading {
-        text-align: center;
-        font-weight: 900;
-        font-size: 30px;
-        color: rgb(16, 137, 211);
-    }
-
-
-    .input {
-        width: 100%;
-        background: white;
-        border: none;
-        padding: 15px 20px;
-        border-radius: 20px;
-        margin-top: 15px;
-        box-shadow: #cff0ff 0px 10px 10px -5px;
-        border-inline: 2px solid transparent;
-    }
-
-
-        .input::-moz-placeholder {
-            color: rgb(170, 170, 170);
-        }
-
-        .input::placeholder {
-            color: rgb(170, 170, 170);
-        }
-
-        .input:focus {
-            outline: none;
-            border-inline: 2px solid #12B1D1;
-        }
-
-    .login-button {
-        display: block;
-        width: 75%;
-        font-weight: bold;
-        background: linear-gradient(45deg, rgb(16, 137, 211) 0%, rgb(18, 177, 209) 100%);
-        color: white;
-        padding-block: 15px;
-        margin: 20px auto;
-        border-radius: 20px;
-        box-shadow: rgba(133, 189, 215, 0.8784313725) 0px 20px 10px -15px;
-        border: none;
-        transition: all 0.2s ease-in-out;
-    }
-
-        .login-button:hover {
-            transform: scale(1.03);
-            box-shadow: rgba(133, 189, 215, 0.8784313725) 0px 23px 10px -20px;
-        }
-
-        .login-button:active {
-            transform: scale(0.95);
-            box-shadow: rgba(133, 189, 215, 0.8784313725) 0px 15px 10px -10px;
-        }
-</style>
-
 @using (Html.BeginForm("Create", "Bills", FormMethod.Post))
 {
-<div>
-        <input asp-for="BillType" placeholder="Type" class="input" />
-        <span asp-validation-for="BillType" class="text-danger"></span>
-
-</div>
-
-<div>
-        <input asp-for="Amount" placeholder="Amount" class="input" type="number" step="0.01" min="0" />
-        <span asp-validation-for="Amount" class="text-danger"></span>
-
-</div>
-
-<div>
-        <input asp-for="DueDate" placeholder="Due Date" class="input" type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" />
-        <span asp-validation-for="DueDate" class="text-danger"></span>
-
-</div>
-<br />
-
-<button type="submit" class="login-button">Create Bill</button>
+    <div class="login-container">
+        <div>
+            <input asp-for="BillType" placeholder="Type" class="reply-textfield" />
+            <span asp-validation-for="BillType" class="text-danger"></span>
+        </div>
+        <div>
+            <input asp-for="Amount" placeholder="Amount" class="reply-textfield" type="number" step="0.01" min="0" />
+            <span asp-validation-for="Amount" class="text-danger"></span>
+        </div>
+        <div>
+            <input asp-for="DueDate" placeholder="Due Date" class="reply-textfield" type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+            <span asp-validation-for="DueDate" class="text-danger"></span>
+        </div>
+        <div class="centered" style="margin-top: 40px;">
+            <button type="submit" class="create-button">Create Bill</button>
+        </div>
+    </div>
 }
 
 @section Scripts {

@@ -1,7 +1,7 @@
-<h2>Glasaj za Nov Admin</h2>
+<h2>Vote for a new Admin"></a></h2>
 <form method="post" asp-action="SubmitVote">
     <div class="form-group">
-        <label for="candidate">Izberi Kandidat:</label>
+        <label for="candidate">Choose a candidate:</label>
         <select id="candidate" name="candidateId" class="form-control">
             @foreach (var candidate in ViewBag.Candidates)
             {
@@ -9,7 +9,7 @@
             }
         </select>
     </div>
-    <button type="submit" class="btn btn-success">Glasaj</button>
+    <button type="submit" class="btn btn-success">Vote</button>
 </form>
 
 @if (TempData["Message"] != null)

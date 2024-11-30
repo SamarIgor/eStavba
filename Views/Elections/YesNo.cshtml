@@ -1,8 +1,20 @@
-<h2>Voting for a New Admin Election</h2>
-<p>Select if you want a new election:</p>
-
-<form method="post" asp-action="VoteForElection">
-    <button type="submit" name="vote" value="Yes" class="btn btn-success">Yes</button>
-    <button type="submit" name="vote" value="No" class="btn btn-danger">No</button>
-</form>
-
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h2 class="text-center">Voting for a New Admin Election</h2>
+        </div>
+        <div class="card-body">
+            <p class="text-center lead mb-4">Would you like to initiate a new election for the admin position?</p>
+            <div class="d-flex justify-content-center">
+                <form method="post" asp-action="VoteForElection" class="d-flex gap-3">
+                    <button type="submit" name="vote" value="Yes" class="btn btn-success btn-lg px-4">
+                        <i class="fas fa-check-circle"></i> Yes
+                    </button>
+                    <button type="submit" name="vote" value="No" class="btn btn-danger btn-lg px-4">
+                        <i class="fas fa-times-circle"></i> No
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

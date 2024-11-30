@@ -1,28 +1,78 @@
-<h2>Tekoven Admin</h2>
-<p>Ime: @ViewBag.CurrentAdmin</p>
-<p>Vreme na pozicija: @ViewBag.DaysInPosition denovi</p>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Application</title>
 
-@{
-    int daysInPosition = 0;
-    int.TryParse(ViewBag.DaysInPosition?.ToString(), out daysInPosition);
-    ElectionState state = ViewBag.election.State;
-    int countYesVotes = ViewBag.countYesVotes;
-    int countNoVotes = ViewBag.countNoVotes;
-}
+    <link href="~/css/site.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        @{
+            int daysInPosition = 0;
+            int.TryParse(ViewBag.DaysInPosition?.ToString(), out daysInPosition);
+            ElectionState state = ViewBag.election.State;
+            
+            int countYesVotes = ViewBag.countYesVotes ?? 0;
+            int countNoVotes = ViewBag.countNoVotes ?? 0;
 
-@if (daysInPosition >= 90 && (int) state == 3)
-{
-    <form method="post" asp-action="ProposeElection">
-        <button type="submit" class="btn btn-primary">Propose New Election</button>
-    </form>
-}
-else if ((int) state == 1)
-{
-    <p>No votes: @countNoVotes</p>
-    <p>Yes votes: @countYesVotes</p>
-}
+            int totalVotes = countYesVotes + countNoVotes;
+            int yesPercentage = totalVotes > 0 ? (countYesVotes * 100) / totalVotes : 0;
+            int noPercentage = totalVotes > 0 ? (countNoVotes * 100) / totalVotes : 0;
 
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-info">@TempData["Message"]</div>
-}
+            DateTime endDate = ViewBag.endDate;
+            TimeSpan timeRemaining = endDate - DateTime.UtcNow;
+
+            int daysLeft = timeRemaining.Days;
+            int hoursLeft = timeRemaining.Hours;
+            int minutesLeft = timeRemaining.Minutes;
+        }
+
+        @if (daysInPosition >= 90 && (int)state == 3)
+        {
+            <h1 class="heading">Elections</h1>
+            <h2 class="mb-3">Current Admin</h2>
+            <p><strong>Name:</strong> @ViewBag.CurrentAdmin</p>
+            <p><strong>Time on position:</strong> @ViewBag.DaysInPosition days</p>
+            <form method="post" asp-action="ProposeElection">
+                <button type="submit" class="custom-button">Propose New Election</button>
+            </form>
+        }
+        else if ((int)state == 1)
+        {
+            <h1 class="heading">Elections</h1>
+            <div>
+                <h3 class="heading3" style="margin-top: 50px; margin-bottom: 20px;">Voting Results</h3>
+                <div class="progress" style="height: 30px; width: 800px; margin: 0 auto;">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: @yesPercentage%;" 
+                        aria-valuenow="@yesPercentage" aria-valuemin="0" aria-valuemax="100">
+                        Yes: @yesPercentage%
+                    </div>
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: @noPercentage%;" 
+                        aria-valuenow="@noPercentage" aria-valuemin="0" aria-valuemax="100">
+                        No: @noPercentage%
+                    </div>
+                </div>
+                <div>
+                    @if (timeRemaining.TotalSeconds > 0)
+                    {
+                        <h3 class="heading3" style="margin-top: 50px; margin-bottom: 20px;">Time Left to Vote</h3>
+                        <p class="created-on">
+                            <strong>@daysLeft</strong> days, 
+                            <strong>@hoursLeft</strong> hours, 
+                            and <strong>@minutesLeft</strong> minutes remaining.
+                        </p>
+                    }
+                    else
+                    {
+                        <h3 class="heading3" style="margin-top: 50px; margin-bottom: 20px;">Voting has ended.</h3>
+                    }
+                </div>
+            </div>
+        }
+
+        @if (TempData["Message"] != null)
+        {
+            <div class="alert alert-info mt-3">@TempData["Message"]</div>
+        }
+    </div>
+</body>
