@@ -36,7 +36,7 @@ namespace eStavba.Models
         public string UserId { get; set; }
 
         public string Name { get; set; }
-        public int Votes { get; set; } = 0;
+        public List<Vote> Votes { get; set; } = new();
 
         [ForeignKey("Election")]
         public int ElectionModelId { get; set; }
@@ -62,7 +62,9 @@ namespace eStavba.Models
         public string UserId { get; set; }
         public IdentityUser User { get; set; }
 
-        public VoteType VoteType { get; set; }
+        public VoteType? VoteType { get; set; }
+
+        public int? CandidateId { get; set; } 
     }
 
 

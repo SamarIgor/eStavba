@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using eStavba.Data;
 using Microsoft.EntityFrameworkCore;
 using eStavba.Models;
+using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 
 namespace eStavba.Controllers
 {
@@ -57,8 +58,19 @@ namespace eStavba.Controllers
 
                 if (timeRemaining.TotalSeconds > 0 && hasVoted == 0) return View("YesNo");
 
+                else if (timeRemaining.TotalSeconds <= 0 && countYesVotes > countNoVotes) {
+                
+                    lastElection.State = ElectionState.Ongoing;
+                    _context.Update(lastElection);
+                    await _context.SaveChangesAsync();
+
+                    ViewBag.candidates = lastElection.Candidates;
+
+                    return View("Vote");
+                } 
+
                 return View("Index");
-            }
+            } 
 
             if (currentAdmin != null)
             {
@@ -196,99 +208,79 @@ namespace eStavba.Controllers
             return RedirectToAction("Index");
         }
 
-        // stari propose
-                    // var currentUser = await _userManager.GetUserAsync(User);
-
-            // // Fetch the latest election in the NotStarted state (if any)
-            // var yesNoElection = await _context.Elections
-            //     .Include(e => e.Candidates)  // Include Candidates to fetch them with the election
-            //     .OrderByDescending(e => e.EndDate)
-            //     .FirstOrDefaultAsync(e => e.State == ElectionState.YesNo);
-
-            // // Check if there is an ongoing election
-            // if (yesNoElection != null)
-            // {
-            //     // Check if the current user is the initiator of the election
-            //     if (yesNoElection.InitiatorUserId == currentUser.Id)
-            //     {
-            //         // Count the number of candidates
-            //         var candidatesCount = yesNoElection.Candidates.Count;  // Now using Candidates from the loaded election
-
-            //         // Calculate the sufficient votes required based on the number of candidates
-            //         var sufficientVotesRequired = (int)Math.Floor((double)candidatesCount / 2) + 1;
-
-            //         // If the initial voting did not pass, enforce a 15-day cooldown for the initiator
-            //         var initialVotingResult = await _context.Votes
-            //             .Where(v => v.ElectionId == yesNoElection.Id && v.VoteType == VoteType.Yes)
-            //             .CountAsync();
-
-            //         if (initialVotingResult < sufficientVotesRequired)  // Ensure this is the correct threshold
-            //         {
-            //             var lastVoteDate = yesNoElection.StartDate; // Set this appropriately based on your logic
-            //             var cooldownPeriod = TimeSpan.FromDays(15);
-
-            //             // Check if the cooldown period has passed
-            //             if (DateTime.UtcNow < lastVoteDate.Add(cooldownPeriod))
-            //             {
-            //                 TempData["Message"] = "You cannot initiate a new election yet. Please wait 15 more days.";
-            //                 return RedirectToAction("Index");  // Or whatever action is appropriate
-            //             }
-            //         }
-            //     }
-            // }
-
-            // // Fetch the current admin (if one exists)
-            // var adminUser = await _userManager.GetUsersInRoleAsync("Admin");
-            // var currentAdmin = adminUser.FirstOrDefault();  // Get the first admin or null if none exists
-
-            // string currentHouseManager = currentAdmin?.UserName ?? "ADMIN NO";  // If no admin exists, set to "ADMIN NO"
-
-            // // If no ongoing election or the current user is not the initiator, start a new election
-            // var election = new ElectionModel
-            // {
-            //     StartDate = DateTime.UtcNow,
-            //     EndDate = DateTime.UtcNow.AddDays(3),  // Election duration, adjust as necessary
-            //     State = ElectionState.YesNo,
-            //     InitiatorUserId = currentUser.Id,  // Set the InitiatorUserId here
-            //     CurrentHouseManager = currentHouseManager  // Set CurrentHouseManager to the current admin's UserName (or "ADMIN NO" if no admin)
-            // };
-
-            // ViewBag.election = election;
-
         // GET: Voting page
         public IActionResult Vote()
         {
-            // Fetch users eligible for voting
-            var users = _userManager.Users.ToList();
-            var currentUserId = _userManager.GetUserId(User);
+            // // Fetch users eligible for voting
+            // var users = _userManager.Users.ToList();
+            // var currentUserId = _userManager.GetUserId(User);
 
-            var candidates = users.Where(u => u.Id != currentUserId).Select(u => new
-            {
-                u.Id,
-                u.UserName
-            }).ToList();
+            // var candidates = users.Where(u => u.Id != currentUserId).Select(u => new
+            // {
+            //     u.Id,
+            //     u.UserName
+            // }).ToList();
 
-            ViewBag.Candidates = candidates;
+            // ViewBag.Candidates = candidates;
+            // return View();
+
             return View();
         }
 
         // POST: Submit vote
         [HttpPost]
-        public async Task<IActionResult> SubmitVote(string candidateId)
+        public async Task<IActionResult> SubmitVote(int candidateId)
         {
-            var currentUserId = _userManager.GetUserId(User);
+            var currentUser = await _userManager.GetUserAsync(User);
 
-            if (currentUserId == candidateId)
+
+            var lastElection = await _context.Elections
+                .Include(e => e.Candidates)  // Include candidates
+                .OrderByDescending(e => e.EndDate)
+                .FirstOrDefaultAsync();
+
+
+            ViewBag.candidates = lastElection.Candidates;
+            // Find the selected candidate from the election's candidates
+            Candidate candidate = lastElection.Candidates.FirstOrDefault(c => c.Id == candidateId);
+
+            // Check if the user is trying to vote for themselves
+            if (currentUser.Id.Equals(candidate.UserId))
             {
-                TempData["Message"] = "Ne mozhete da glasate za samite sebe.";
-                return RedirectToAction("Vote");
+                TempData["Message"] = "You cannot vote for yourself.";
+                return RedirectToAction("Index");
             }
 
-            // Save vote to the database (not shown here, depends on implementation)
+            // Check if the current user has already voted in this election
+            var hasVoted = await _context.Votes
+                .Where(v => v.ElectionId == lastElection.Id && v.User.Id == candidate.UserId)
+                .CountAsync();
 
-            TempData["Message"] = "Glasot e uspesno dostaven!";
+            if (hasVoted > 0)
+            {
+                TempData["Message"] = "You have already voted.";
+                return RedirectToAction("Index");
+            }
+
+            // Add the vote to the database
+            Vote voteForCandidate = new Vote 
+            {
+                ElectionId = lastElection.Id,
+                Election = lastElection,
+                UserId = currentUser.Id,
+                User = currentUser,
+                CandidateId = candidateId
+            };
+
+            candidate.Votes.Add(voteForCandidate);
+            
+            _context.Update(candidate);
+            await _context.SaveChangesAsync();
+
+            TempData["Message"] = "Your vote has been successfully submitted!";
             return RedirectToAction("Index");
         }
+
 
         // GET: Election results
         public IActionResult Results()

@@ -1,11 +1,14 @@
-<h2>Vote for a new Admin"></a></h2>
+
+
+<h2>Vote for a new Admin</h2>
 <form method="post" asp-action="SubmitVote">
     <div class="form-group">
         <label for="candidate">Choose a candidate:</label>
         <select id="candidate" name="candidateId" class="form-control">
-            @foreach (var candidate in ViewBag.Candidates)
-            {
-                <option value="@candidate.Id">@candidate.UserName</option>
+            @foreach (var candidate in ViewBag.candidates)
+            { 
+                <option value="@candidate.Id">@candidate.Name</option>
+                <p>@candidate.Id</p>
             }
         </select>
     </div>
