@@ -34,7 +34,7 @@
             <p><strong>Name:</strong> @ViewBag.CurrentAdmin</p>
             <p><strong>Time on position:</strong> @ViewBag.DaysInPosition days</p>
             <form method="post" asp-action="ProposeElection">
-                <button type="submit" class="custom-button">Propose New Election</button>
+                <button type="submit" class="create-button">Propose New Election</button>
             </form>
         }
         else if ((int)state == 1)

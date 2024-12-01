@@ -42,19 +42,22 @@ namespace eStavba.Controllers
             ViewBag.election = lastElection;
             ViewBag.endDate = lastElection.EndDate;
 
-            if (lastElection.State == ElectionState.YesNo) {
-                if (hasVoted > 0) {
-                    var countYesVotes = await _context.Votes
-                        .Where(v => v.ElectionId == lastElection.Id && v.VoteType == VoteType.Yes)
-                        .CountAsync();
-                    var countNoVotes = await _context.Votes
-                        .Where(v => v.ElectionId == lastElection.Id && v.VoteType == VoteType.No)
-                        .CountAsync();
+            TimeSpan timeRemaining = lastElection.EndDate - DateTime.UtcNow;
 
-                    ViewBag.countNoVotes = countNoVotes;
-                    ViewBag.CountYesVotes = countYesVotes;
-                }
-                else return View("YesNo");
+            if (lastElection.State == ElectionState.YesNo) {
+                var countYesVotes = await _context.Votes
+                    .Where(v => v.ElectionId == lastElection.Id && v.VoteType == VoteType.Yes)
+                    .CountAsync();
+                var countNoVotes = await _context.Votes
+                    .Where(v => v.ElectionId == lastElection.Id && v.VoteType == VoteType.No)
+                    .CountAsync();
+
+                ViewBag.countNoVotes = countNoVotes;
+                ViewBag.CountYesVotes = countYesVotes;
+
+                if (timeRemaining.TotalSeconds > 0 && hasVoted == 0) return View("YesNo");
+
+                return View("Index");
             }
 
             if (currentAdmin != null)
@@ -132,12 +135,12 @@ namespace eStavba.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> VoteForElection(string vote) {
+        public async Task<IActionResult> VoteForElection(string electionVote, string candidateVote) {
             var lastElection = await _context.Elections
                 .Include(e => e.Candidates)  // Include Candidates to fetch them with the election
                 .OrderByDescending(e => e.EndDate)
                 .FirstOrDefaultAsync();
-            
+
             ViewBag.election = lastElection;
             ViewBag.endDate = lastElection.EndDate;
 
@@ -163,13 +166,32 @@ namespace eStavba.Controllers
             };
 
             if (lastElection.State == ElectionState.YesNo) {
-                if (vote == "Yes") {
+                if (electionVote == "Yes") {
                    _context.Votes.Add(voteYes);
                 } else {
                     _context.Votes.Add(voteNo);
                 }
+
+                if (candidateVote == "Yes") {
+                     var isAlreadyCandidate = lastElection.Candidates
+                        .Any(c => c.UserId == currentUser.Id);
+
+                    if (!isAlreadyCandidate)
+                    {
+                        Candidate candidate = new Candidate
+                        {
+                            UserId = currentUser.Id,
+                            Name = currentUser.UserName,
+                            
+                        };
+
+                        lastElection.Candidates.Add(candidate);
+                    }
+                }
+
                 await _context.SaveChangesAsync();
             }
+
             
             return RedirectToAction("Index");
         }
