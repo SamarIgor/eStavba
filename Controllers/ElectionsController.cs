@@ -182,17 +182,17 @@ namespace eStavba.Controllers
                         {
                             UserId = currentUser.Id,
                             Name = currentUser.UserName,
-                            
+                            ElectionModelId = lastElection.Id
                         };
 
                         lastElection.Candidates.Add(candidate);
+                        _context.Update(lastElection);
                     }
                 }
 
                 await _context.SaveChangesAsync();
             }
 
-            
             return RedirectToAction("Index");
         }
 

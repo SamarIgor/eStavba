@@ -38,8 +38,8 @@ namespace eStavba.Models
         public string Name { get; set; }
         public int Votes { get; set; } = 0;
 
-        //[ForeignKey("Election")]
-        //public int ElectionId { get; set; }
+        [ForeignKey("Election")]
+        public int ElectionModelId { get; set; }
 
     }
 
