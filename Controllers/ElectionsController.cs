@@ -8,6 +8,7 @@ using eStavba.Data;
 using Microsoft.EntityFrameworkCore;
 using eStavba.Models;
 using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
+using eStavba.Services;
 
 namespace eStavba.Controllers
 {
@@ -16,11 +17,17 @@ namespace eStavba.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _context;
-        public ElectionsController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
+
+        private readonly RoleService _roleService;
+        public ElectionsController(UserManager<IdentityUser> userManager, 
+        RoleManager<IdentityRole> roleManager, 
+        ApplicationDbContext context, 
+        RoleService roleService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _context = context;
+            _roleService = roleService;
         }
 
         // GET: Display current admin and election options
@@ -36,8 +43,14 @@ namespace eStavba.Controllers
 
             var currentUserId = _userManager.GetUserId(User);
 
+            var hasVotedForVoting = await _context.Votes
+                        .Where(v => v.ElectionId == lastElection.Id && v.UserId == currentUserId
+                        && v.VoteType != null)
+                        .CountAsync();
+
             var hasVoted = await _context.Votes
-                        .Where(v => v.ElectionId == lastElection.Id && v.UserId == currentUserId)
+                        .Where(v => v.ElectionId == lastElection.Id && v.UserId == currentUserId
+                        && v.CandidateId != null)
                         .CountAsync();
 
             ViewBag.election = lastElection;
@@ -56,13 +69,16 @@ namespace eStavba.Controllers
                 ViewBag.countNoVotes = countNoVotes;
                 ViewBag.CountYesVotes = countYesVotes;
 
-                if (timeRemaining.TotalSeconds > 0 && hasVoted == 0) return View("YesNo");
+                if (timeRemaining.TotalSeconds > 0 && hasVotedForVoting == 0) return View("YesNo");
 
                 else if (timeRemaining.TotalSeconds <= 0 && countYesVotes > countNoVotes) {
                 
                     lastElection.State = ElectionState.Ongoing;
+                    lastElection.EndDate = DateTime.UtcNow.AddDays(3);
                     _context.Update(lastElection);
                     await _context.SaveChangesAsync();
+
+                    timeRemaining = lastElection.EndDate - DateTime.UtcNow;
 
                     ViewBag.candidates = lastElection.Candidates;
 
@@ -70,14 +86,65 @@ namespace eStavba.Controllers
                 } 
 
                 return View("Index");
+            } else if (lastElection.State == ElectionState.Ongoing) {
+
+                if (hasVoted == 0) {
+                    ViewBag.candidates = lastElection.Candidates;
+                    return View("Vote");
+                }
+
+                var candidatesWithVotes = lastElection.Candidates
+                    .Select(candidate => new
+                    {
+                        candidate.Name,
+                        VoteCount = _context.Votes.Count(v => v.CandidateId == candidate.Id && v.ElectionId == lastElection.Id)
+                    }).ToList();
+
+                ViewBag.CandidatesWithVotes = candidatesWithVotes;
+
+                if (timeRemaining.TotalSeconds <= 0) {
+                    lastElection.State = ElectionState.Completed;
+                    _context.Update(lastElection);
+                    await _context.SaveChangesAsync();
+                }
+
             } 
 
             if (currentAdmin != null)
             {
-                var adminRoleId = _context.Roles.FirstOrDefault(r => r.Name == "Admin")?.Id;
+                var adminRoleId = _context.Roles.FirstOrDefault(r => r.NormalizedName == "ADMIN").Id;
+                var userRoleId = _context.Roles.FirstOrDefault(r => r.NormalizedName == "MEMBER").Id;
                 var adminUserId = _context.UserRoles.FirstOrDefault(u => u.RoleId == adminRoleId).UserId;
                 var election = _context.Elections.FirstOrDefault(x => x.CurrentHouseManager == currentAdmin.Email);
                 if (ViewBag.election == null) ViewBag.election = election;
+
+                if (lastElection.State == ElectionState.Completed) {
+                    // Find the candidate with the most votes
+                    var winner = lastElection.Candidates
+                        .OrderByDescending(c => c.Votes.Count)
+                        .FirstOrDefault();
+
+                    var winnerUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == winner.UserId);
+                    var isWinnerAdmin = await _userManager.IsInRoleAsync(winnerUser, "Admin");
+
+                    if (winner != null && winner.UserId != adminUserId && !isWinnerAdmin) 
+                    {
+
+                        var isAdminMember = await _userManager.IsInRoleAsync(currentAdmin, "Admin");
+                        if (isAdminMember)
+                        {
+                            await _roleService.AssignRole(currentAdmin.Id, userRoleId);
+                        }
+
+                        // Assign the "Admin" role to the winner
+                        await _roleService.AssignRole(winner.UserId, adminRoleId);
+                        adminUser = await _userManager.GetUsersInRoleAsync("Admin");
+                        currentAdmin = adminUser.FirstOrDefault();
+
+                        TempData["Message"] = $"The new admin is {winner.Name}. The election is now complete.";
+                    }
+                    
+                }
                 
 
                 // Correctly reference the current user's ID in the query
@@ -253,7 +320,7 @@ namespace eStavba.Controllers
 
             // Check if the current user has already voted in this election
             var hasVoted = await _context.Votes
-                .Where(v => v.ElectionId == lastElection.Id && v.User.Id == candidate.UserId)
+                .Where(v => v.ElectionId == lastElection.Id && v.UserId == currentUser.Id && v.CandidateId != null)
                 .CountAsync();
 
             if (hasVoted > 0)

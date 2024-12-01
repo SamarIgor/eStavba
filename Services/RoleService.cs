@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using eStavba.Data;
 using eStavba.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -38,28 +39,47 @@ namespace eStavba.Services
                 throw new ArgumentException("Invalid User ID or Role ID.");
             }
 
-            // Check if the role is already assigned to the user
-            var existingAssignment = await _context.RoleAssignments
-                .FirstOrDefaultAsync(ra => ra.UserId == userId && ra.RoleId == roleId);
+            // Remove existing role assignments from RoleAssignments and AspNetUserRoles
+            var existingAssignments = await _context.RoleAssignments
+                .Where(ra => ra.UserId == userId)
+                .ToListAsync();
 
-            if (existingAssignment != null)
+            if (existingAssignments.Any())
             {
-                _logger.LogWarning("Role {RoleId} is already assigned to user {UserId}.", roleId, userId);
-                throw new InvalidOperationException("This role is already assigned to the user.");
+                _context.RoleAssignments.RemoveRange(existingAssignments);
+                _logger.LogInformation("Removed existing roles from RoleAssignments for user {UserId}.", userId);
             }
 
-            // Create a new role assignment
+            var existingAspNetUserRoles = await _context.UserRoles
+                .Where(ur => ur.UserId == userId)
+                .ToListAsync();
+
+            if (existingAspNetUserRoles.Any())
+            {
+                _context.UserRoles.RemoveRange(existingAspNetUserRoles);
+                _logger.LogInformation("Removed existing roles from AspNetUserRoles for user {UserId}.", userId);
+            }
+
+            // Add the new role assignment to RoleAssignments
             var roleAssignment = new RoleAssignment
             {
                 UserId = userId,
                 RoleId = roleId,
                 AssignedDate = DateTime.UtcNow
             };
+            _context.RoleAssignments.Add(roleAssignment);
+
+            // Add the new role assignment to AspNetUserRoles
+            var userRole = new IdentityUserRole<string>
+            {
+                UserId = userId,
+                RoleId = roleId
+            };
+            _context.UserRoles.Add(userRole);
 
             try
             {
-                // Add the role assignment to the database
-                _context.RoleAssignments.Add(roleAssignment);
+                // Save changes to the database
                 await _context.SaveChangesAsync();
 
                 _logger.LogInformation("Role {RoleId} assigned to user {UserId} on {AssignedDate}.", roleId, userId, roleAssignment.AssignedDate);
@@ -70,5 +90,7 @@ namespace eStavba.Services
                 throw new ApplicationException("An error occurred while assigning the role.", ex);
             }
         }
+
+
     }
 }
