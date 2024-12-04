@@ -6,43 +6,45 @@
     <link href="~/css/site.css" rel="stylesheet" />
 </head>
 <body>
-    <div class="container">
-        <h1 class="heading">Elections</h1>
-        @{
-            int daysInPosition = 0;
-            int.TryParse(ViewBag.DaysInPosition?.ToString(), out daysInPosition);
-            ElectionState state = ViewBag.election.State;
-            
-            int countYesVotes = ViewBag.countYesVotes ?? 0;
-            int countNoVotes = ViewBag.countNoVotes ?? 0;
+    <div class="center-page" style="min-width: 500px;">
+        <div class="login-container">
+            <h1 class="heading">Elections</h1>
+            @{
+                int daysInPosition = 0;
+                int.TryParse(ViewBag.DaysInPosition?.ToString(), out daysInPosition);
+                ElectionState state = ViewBag.election.State;
+                
+                int countYesVotes = ViewBag.countYesVotes ?? 0;
+                int countNoVotes = ViewBag.countNoVotes ?? 0;
 
-            int totalVotes = countYesVotes + countNoVotes;
-            int yesPercentage = totalVotes > 0 ? (countYesVotes * 100) / totalVotes : 0;
-            int noPercentage = totalVotes > 0 ? (countNoVotes * 100) / totalVotes : 0;
+                int totalVotes = countYesVotes + countNoVotes;
+                int yesPercentage = totalVotes > 0 ? (countYesVotes * 100) / totalVotes : 0;
+                int noPercentage = totalVotes > 0 ? (countNoVotes * 100) / totalVotes : 0;
 
-            DateTime endDate = ViewBag.endDate;
-            TimeSpan timeRemaining = endDate - DateTime.UtcNow;
+                DateTime endDate = ViewBag.endDate;
+                TimeSpan timeRemaining = endDate - DateTime.UtcNow;
 
-            int daysLeft = timeRemaining.Days;
-            int hoursLeft = timeRemaining.Hours;
-            int minutesLeft = timeRemaining.Minutes;
-        }
-
-        @if ((int)state == 3)
-        {
-            <h2 class="mb-3">Current Admin</h2>
-            <p><strong>Name:</strong> @ViewBag.CurrentAdmin</p>
-            <p><strong>Time on position:</strong> @ViewBag.DaysInPosition days</p>
-
-            if(daysInPosition >= 90) {
-                <form method="post" asp-action="ProposeElection">
-                    <button type="submit" class="create-button">Propose New Election</button>
-                </form>
+                int daysLeft = timeRemaining.Days;
+                int hoursLeft = timeRemaining.Hours;
+                int minutesLeft = timeRemaining.Minutes;
             }
-        }
-        else if ((int)state == 1)
-        {
-            <div>
+
+            @if ((int)state == 3)
+            {
+                <h2 class="heading3">Current Admin</h2>
+                <p class="heading2" style="color: #242424">@ViewBag.CurrentAdmin</p>
+                <p class="created-on">Time on position: @ViewBag.DaysInPosition days</p>
+                <p class="created-on">You can only initiate an election if 90 days have passed since the last one.</p>
+
+                @if(daysInPosition >= 90) {
+                    <form method="post" asp-action="ProposeElection">
+                        <button type="submit" class="create-button">Propose New Election</button>
+                        <p class="created-on">By clicking this button you will initiate a voting.</p>
+                    </form>
+                }
+            }
+            else if ((int)state == 1)
+            {
                 <h3 class="heading3" style="margin-top: 50px; margin-bottom: 20px;">Voting Results</h3>
                 <div class="progress" style="height: 30px; width: 800px; margin: 0 auto;">
                     <div class="progress-bar bg-success" role="progressbar" style="width: @yesPercentage%;" 
@@ -69,11 +71,9 @@
                         <h3 class="heading3" style="margin-top: 50px; margin-bottom: 20px;">Voting has ended.</h3>
                     }
                 </div>
-            </div>
-        } 
-        else if ((int) state == 2) 
-        {
-            <div>
+            } 
+            else if ((int) state == 2) 
+            {
                 <h3 class="heading3" style="margin-top: 50px; margin-bottom: 20px;">Voting Results</h3>
                 <div class="table-responsive">
                     <table class="table table-striped">
@@ -94,13 +94,12 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
+            }
 
-        }
-
-        @if (TempData["Message"] != null)
-        {
-            <div class="alert alert-info mt-3">@TempData["Message"]</div>
-        }
+            @if (TempData["Message"] != null)
+            {
+                <div class="alert alert-info mt-3">@TempData["Message"]</div>
+            }
+        </div>
     </div>
 </body>

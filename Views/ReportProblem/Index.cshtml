@@ -13,11 +13,10 @@
         display: flex;
         flex-direction: column;
         color: #000000;
+        text-align: center;
+        height: 100vh; /* Full viewport height */
     }
-</style>
 
-
-<style>
     textarea {
         width: 100%;
         padding: 8px;
@@ -26,40 +25,57 @@
 
     textarea[name="ProblemDescription"] {
         resize: none;
-        height: 100px;
+        height: 150px;
+    }
+
+    .col-12 {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px; 
+    }
+
+    .col-6 {
+        flex: 1; 
     }
 </style>
 
-<div class="heading" style="margin-bottom: 40px;">Report a Problem</div>
-
-<div class="login-container">
-    <form asp-action="SubmitProblem" asp-controller="ReportProblem" method="post" class="form" style="margin-bottom: 2cm;">
-        <div class="form-floating">
-            <input asp-for="FirstName" class="reply-textfield" placeholder="Name" />
-            <span asp-validation-for="FirstName" class="text-danger"></span>
-        </div>
-        <div class="form-floating">
-            <input asp-for="LastName" class="reply-textfield" placeholder="Surname" />
-            <span asp-validation-for="LastName" class="text-danger"></span>
-        </div>
-        <div class="form-floating">
-            <input asp-for="Email" class="reply-textfield" placeholder="Email" />
-            <span asp-validation-for="Email" class="text-danger"></span>
-        </div>
-        <div class="form-floating">
-            <input asp-for="PhoneNumber" class="reply-textfield" type="tel" placeholder="Phone Number" />
-            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-        </div>
-        <div class="form-floating">
-            <input asp-for="ApartmentNumber" class="reply-textfield" placeholder="Apartment Number" />
-            <span asp-validation-for="ApartmentNumber" class="text-danger"></span>
-        </div>
-        <div class="form-floating">
-            <textarea asp-for="ProblemDescription" class="reply-textfield" placeholder="Problem Description"></textarea>
-            <span asp-validation-for="ProblemDescription" class="text-danger"></span>
-        </div>
-        <div class="centered">
-            <button type="submit" class="create-button" style="margin-top: 20px; margin-bottom: -30px;">Submit</button>
-        </div>
-    </form>
+<div class="center-page">
+    <div class="login-container" style="min-width: 1000px;">
+        <div class="heading">Report a Problem</div>
+        <form asp-action="SubmitProblem" asp-controller="ReportProblem" method="post" class="form">
+            <div class="col-12">
+                <div class="col-6">
+                    <div class="form-floating">
+                        <input asp-for="FirstName" class="reply-textfield" placeholder="Name" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating">
+                        <input asp-for="LastName" class="reply-textfield" placeholder="Surname" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating">
+                        <textarea asp-for="ProblemDescription" class="reply-textfield" placeholder="Problem Description"></textarea>
+                        <span asp-validation-for="ProblemDescription" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-6">
+                     <div class="form-floating">
+                        <input asp-for="Email" class="reply-textfield" placeholder="Email" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating">
+                        <input asp-for="PhoneNumber" class="reply-textfield" type="tel" placeholder="Phone Number" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating">
+                        <input asp-for="ApartmentNumber" class="reply-textfield" placeholder="Apartment Number" />
+                        <span asp-validation-for="ApartmentNumber" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <button type="submit" class="create-button" style="margin-top: 30px;">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>

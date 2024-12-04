@@ -6,10 +6,6 @@
     ViewData["Title"] = "Delete Announcement";
 }
 
-<br />
-<h2 class="heading">Delete Announcement</h2>
-<br />
-
 <style>
     body {
         background-color: #f2f2f2;
@@ -19,22 +15,26 @@
         display: flex;
         flex-direction: column;
         color: #000000;
+        text-align: center;
     }
 </style>
 
-<div class="login-container">
-    <div>
-        <h3 class="heading3">@Model.Title</h3>
-        <p class="created-on">Created on: @Model.DatePosted.ToString("MMMM dd, yyyy")</p>
-        <hr></hr>
-        <p>@Model.Content</p>
-    </div>
-
-    <form asp-action="Delete" asp-controller="KPostAnnouncement" class="form" method="post">
-        @Html.AntiForgeryToken()
-        <input type="hidden" asp-for="Id" />
-        <div class="centered">
-            <button type="submit" class="delete-button">Confirm Delete</button>
+<div class="center-page" style="min-width: 500px;">
+    <div class="login-container">
+        <h2 class="heading">Delete Announcement</h2>
+        <div>
+            <h3 class="heading3">@Model.Title</h3>
+            <p class="created-on">Created on: @Model.DatePosted.ToString("MMMM dd, yyyy")</p>
+            <hr></hr>
+            <p>@Model.Content</p>
         </div>
-    </form>
+
+        <form asp-action="Delete" asp-controller="KPostAnnouncement" class="form" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+            <div class="centered">
+                <button type="submit" class="delete-button">Confirm Delete</button>
+            </div>
+        </form>
+    </div>
 </div>

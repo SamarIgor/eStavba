@@ -1,12 +1,12 @@
 <div class="container mt-4">
-    <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-            <h2 class="text-center">Voting for a New Admin Election</h2>
+    <div class="bubble-container" style="max-width: 750px;">
+        <div class="heading">
+            Voting for a New Admin Election
         </div>
-        <div class="card-body">
+        <div class="form">
             <form method="post" asp-action="VoteForElection" class="d-flex flex-column align-items-center gap-3">
                 <div class="form-group">
-                    <p class="text-center mb-2">Do you vote for a new election?</p>
+                    <p class="heading4" style="margin-bottom: -15px;">Do you vote for a new election?</p>
                     <div class="d-flex gap-4 justify-content-center">
                         <div class="form-check">
                             <input type="radio" id="voteYes" name="electionVote" value="Yes" class="form-check-input" required>
@@ -24,7 +24,7 @@
                 </div>
 
                 <div class="form-group">
-                    <p class="text-center mb-2">Would you like to propose yourself as a candidate?</p>
+                    <p class="heading4" style="margin-bottom: -15px;">Would you like to propose yourself as a candidate?</p>
                     <div class="d-flex gap-4 justify-content-center">
                         <div class="form-check">
                             <input type="radio" id="proposeYes" name="candidateVote" value="Yes" class="form-check-input" required>
@@ -41,9 +41,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-lg px-4">
-                    <i class="fas fa-paper-plane"></i> Submit
-                </button>
+                <button type="submit" class="create-button" style="margin-top: 15px;">Submit</button>
             </form>
         </div>
     </div>

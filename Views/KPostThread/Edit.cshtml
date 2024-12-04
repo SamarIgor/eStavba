@@ -4,10 +4,6 @@
     ViewData["Title"] = "Edit Thread";
 }
 
-<br />
-<h2 class="heading">Edit Thread</h2>
-<br />
-
 <style>
     body {
         background-color: #f2f2f2;
@@ -17,23 +13,27 @@
         display: flex;
         flex-direction: column;
         color: #000000;
+        text-align: center;
     }
 </style>
 
 <form asp-action="Edit" method="post">
     @Html.AntiForgeryToken()
     <input type="hidden" asp-for="Id" />
-    <div class="login-container">
-        <div>
-            <input asp-for="Title" placeholder="Title" class="reply-textfield" />
-            <span asp-validation-for="Title"></span>
-        </div>
-        <div>
-            <textarea asp-for="Content" placeholder="Content" class="reply-textfield"></textarea>
-            <span asp-validation-for="Content"></span>
-        </div>
-        <div class="centered" style="margin-top: 40px;">
-            <button type="submit" class="create-button">Save Changes</button>
+    <div class="center-page" style="min-width: 500px;">
+        <div class="login-container">
+            <h2 class="heading">Edit Thread</h2>
+            <div>
+                <input asp-for="Title" placeholder="Title" class="reply-textfield" />
+                <span asp-validation-for="Title"></span>
+            </div>
+            <div>
+                <textarea asp-for="Content" placeholder="Content" class="reply-textfield"></textarea>
+                <span asp-validation-for="Content"></span>
+            </div>
+            <div class="centered" style="margin-top: 25px;">
+                <button type="submit" class="create-button">Save Changes</button>
+            </div>
         </div>
     </div>
 </form>

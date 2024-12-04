@@ -54,6 +54,14 @@ body {
   color: #242424;
 }
 
+.heading4 {
+  font-family: 'Century Gothic';
+  text-align: center;
+  font-weight: 600;
+  font-size: 20px;
+  color: #242424;
+}
+
 .created-on {
   font-family: 'Century Gothic';
   text-align: center;
@@ -186,31 +194,6 @@ body {
       .form .input:focus {
           outline: none;
           border-inline: 2px solid #ccd6af;
-      }
-
-  
-  .form .login-button {
-      display: block;
-      width: 100%;
-      font-weight: bold;
-      background: linear-gradient(45deg, rgb(16, 137, 211) 0%, rgb(18, 177, 209) 100%);
-      color: white;
-      padding-block: 15px;
-      margin: 20px auto;
-      border-radius: 20px;
-      box-shadow: rgba(133, 189, 215, 0.8784313725) 0px 20px 10px -15px;
-      border: none;
-      transition: all 0.2s ease-in-out;
-  }
-
-      .form .login-button:hover {
-          transform: scale(1.03);
-          box-shadow: rgba(133, 189, 215, 0.8784313725) 0px 23px 10px -20px;
-      }
-
-      .form .login-button:active {
-          transform: scale(0.95);
-          box-shadow: rgba(133, 189, 215, 0.8784313725) 0px 15px 10px -10px;
       }
 
   .form .form-check {
@@ -407,10 +390,11 @@ body {
   box-shadow: 0 0 30px 10px #ccd6af;
   margin: 20px auto;
   font-family: 'Century Gothic';
-  margin-bottom: 75px;
   word-wrap: break-word;
   overflow-wrap: break-word; 
   overflow: hidden; 
+  flex-direction: column; 
+  gap: 15px;  
 }
 
 .agreement {
@@ -430,6 +414,56 @@ body {
 .nav-item {
   font-family: 'Century Gothic';
 }
+
+/* Alerts */
+
+.alert {
+  font-family: "Century Gothic";
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+/* Miscellaneous */
+
+.reset-container {
+  max-width: 500px;
+  background: white;
+  border-radius: 40px;
+  padding: 25px 35px;
+  border: 5px solid rgb(255, 255, 255);
+  box-shadow: 0 0 30px 10px #ccd6af;
+  margin: 20px auto;
+  font-family: 'Century Gothic';
+  margin-bottom: 75px;
+  word-wrap: break-word;
+  overflow-wrap: break-word; 
+  overflow: hidden; 
+  display: block;
+}
+
+.reset-textfield {
+  width: 100%;
+  min-width: 400px;
+  background: white;
+  border: none;
+  padding: 15px 20px;
+  border-radius: 20px;
+  margin-top: 15px;
+  box-shadow: 0 0 5px 0px #ccd6af;
+}
+
+.center-page {
+  position: absolute;  /* Position the element relative to the viewport */
+  top: 50%;            /* Move to the vertical center */
+  left: 50%;           /* Move to the horizontal center */
+  transform: translate(-50%, -50%); /* Offset by half the width and height */
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex-direction: column; /* Ensures items stack vertically */
+}
+
 
 /* #9da87c estavba color
 /* font color #242424

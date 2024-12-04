@@ -33,7 +33,6 @@ namespace eStavba.Controllers
         // GET: Display current admin and election options
         public async Task<IActionResult> Index()
         {   
-
             var adminUser = await _userManager.GetUsersInRoleAsync("Admin");
             var currentAdmin = adminUser.FirstOrDefault();
             var lastElection = await _context.Elections
@@ -62,6 +61,7 @@ namespace eStavba.Controllers
                 var countYesVotes = await _context.Votes
                     .Where(v => v.ElectionId == lastElection.Id && v.VoteType == VoteType.Yes)
                     .CountAsync();
+
                 var countNoVotes = await _context.Votes
                     .Where(v => v.ElectionId == lastElection.Id && v.VoteType == VoteType.No)
                     .CountAsync();
@@ -86,6 +86,7 @@ namespace eStavba.Controllers
                 } 
 
                 return View("Index");
+
             } else if (lastElection.State == ElectionState.Ongoing) {
 
                 if (hasVoted == 0) {
@@ -98,16 +99,40 @@ namespace eStavba.Controllers
                     {
                         candidate.Name,
                         VoteCount = _context.Votes.Count(v => v.CandidateId == candidate.Id && v.ElectionId == lastElection.Id)
-                    }).ToList();
+                    })
+                    .OrderByDescending(c => c.VoteCount)
+                    .ToList();
 
                 ViewBag.CandidatesWithVotes = candidatesWithVotes;
 
                 if (timeRemaining.TotalSeconds <= 0) {
-                    lastElection.State = ElectionState.Completed;
-                    _context.Update(lastElection);
-                    await _context.SaveChangesAsync();
-                }
 
+                    var highestVoteCount = candidatesWithVotes.First().VoteCount;
+                    var tiedCandidates = candidatesWithVotes
+                        .Where(c => c.VoteCount == highestVoteCount)
+                        .ToList();
+
+                    if (tiedCandidates.Count > 1) {
+                        
+                        lastElection.EndDate = DateTime.UtcNow.AddDays(2);
+                        lastElection.Candidates = lastElection.Candidates
+                            .Where(c => tiedCandidates.Any(tc => tc.Name == c.Name))
+                            .ToList();
+
+                        _context.Update(lastElection);
+                        await _context.SaveChangesAsync();
+
+                        ViewBag.candidates = lastElection.Candidates;
+                        return View("Vote");
+
+                    } else {
+
+                        lastElection.State = ElectionState.Completed;
+                        _context.Update(lastElection);
+                        await _context.SaveChangesAsync();
+
+                    }
+                }
             } 
 
             if (currentAdmin != null)
@@ -275,25 +300,6 @@ namespace eStavba.Controllers
             return RedirectToAction("Index");
         }
 
-        // GET: Voting page
-        public IActionResult Vote()
-        {
-            // // Fetch users eligible for voting
-            // var users = _userManager.Users.ToList();
-            // var currentUserId = _userManager.GetUserId(User);
-
-            // var candidates = users.Where(u => u.Id != currentUserId).Select(u => new
-            // {
-            //     u.Id,
-            //     u.UserName
-            // }).ToList();
-
-            // ViewBag.Candidates = candidates;
-            // return View();
-
-            return View();
-        }
-
         // POST: Submit vote
         [HttpPost]
         public async Task<IActionResult> SubmitVote(int candidateId)
@@ -346,16 +352,6 @@ namespace eStavba.Controllers
 
             TempData["Message"] = "Your vote has been successfully submitted!";
             return RedirectToAction("Index");
-        }
-
-
-        // GET: Election results
-        public IActionResult Results()
-        {
-            // Fetch votes from the database and determine the winner
-            // If a tie occurs, prepare for a re-vote
-            ViewBag.Result = "Neresen rezultat. Treba preglasuvanje.";
-            return View();
         }
     }
 }

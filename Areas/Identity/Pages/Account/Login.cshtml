@@ -17,36 +17,38 @@
     }
 </style>
 
-<div class="login-container">
-    <div id="account">
-        <div class="heading">Sign In</div>
-        <div class="row">
-            <div class="col-md-12">
-                <section class="form-container">
-                    <form method="post" action="" class="form">
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        <div class="form-floating">
-                            <input asp-for="Input.Email" class="reply-textfield" autocomplete="username" aria-required="true" placeholder="Email" />
-                            <span asp-validation-for="Input.Email" class="text-danger"></span>
-                        </div>
-                        <div class="form-floating">
-                            <input asp-for="Input.Password" type="password" class="reply-textfield" autocomplete="current-password" aria-required="true" placeholder="Password"/>
-                            <span asp-validation-for="Input.Password" class="text-danger"></span>
-                        </div>
-                        <div class="form-check" style="margin-bottom: 20px;">
-                            <input class="form-check-input" asp-for="Input.RememberMe"/>
-                            <label class="form-check-label" asp-for="Input.RememberMe">Remember me</label>
-                        </div>
-                        <div style="margin-bottom: 20px;">
-                            <button type="submit" class="create-button">Log in</button>
-                        </div>
-                        <div class="text-center">
-                            <a class="agreement" asp-page="./ForgotPassword">Forgot your password?</a>
-                            <a class="agreement" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                            <a class="agreement" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
-                        </div>
-                    </form>
-                </section>
+<div class="center-page" style="min-width: 500px;">
+    <div class="login-container">
+        <div id="account">
+            <div class="heading">Sign In</div>
+            <div class="row">
+                <div class="col-md-12">
+                    <section class="form-container">
+                        <form method="post" action="" class="form">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-floating">
+                                <input asp-for="Input.Email" class="reply-textfield" autocomplete="username" aria-required="true" placeholder="Email" />
+                                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                            </div>
+                            <div class="form-floating">
+                                <input asp-for="Input.Password" type="password" class="reply-textfield" autocomplete="current-password" aria-required="true" placeholder="Password"/>
+                                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                            </div>
+                            <div class="form-check" style="margin-bottom: 20px;">
+                                <input class="form-check-input" asp-for="Input.RememberMe"/>
+                                <label class="form-check-label" asp-for="Input.RememberMe">Remember me</label>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <button type="submit" class="create-button">Log in</button>
+                            </div>
+                            <div class="text-center">
+                                <a class="agreement" asp-page="./ForgotPassword">Forgot your password?</a>
+                                <a class="agreement" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+                                <a class="agreement" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
+                            </div>
+                        </form>
+                    </section>
+                </div>
             </div>
         </div>
     </div>
