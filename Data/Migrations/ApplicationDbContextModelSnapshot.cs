@@ -95,9 +95,6 @@ namespace eStavba.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Votes")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ElectionModelId");
@@ -239,6 +236,9 @@ namespace eStavba.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int?>("CandidateId")
+                        .HasColumnType("int");
+
                     b.Property<int>("ElectionId")
                         .HasColumnType("int");
 
@@ -246,10 +246,12 @@ namespace eStavba.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("VoteType")
+                    b.Property<int?>("VoteType")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CandidateId");
 
                     b.HasIndex("ElectionId");
 
@@ -502,6 +504,10 @@ namespace eStavba.Data.Migrations
 
             modelBuilder.Entity("eStavba.Models.Vote", b =>
                 {
+                    b.HasOne("eStavba.Models.Candidate", null)
+                        .WithMany("Votes")
+                        .HasForeignKey("CandidateId");
+
                     b.HasOne("eStavba.Models.ElectionModel", "Election")
                         .WithMany()
                         .HasForeignKey("ElectionId")
@@ -587,6 +593,11 @@ namespace eStavba.Data.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("eStavba.Models.Candidate", b =>
+                {
+                    b.Navigation("Votes");
                 });
 
             modelBuilder.Entity("eStavba.Models.ElectionModel", b =>
