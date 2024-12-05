@@ -46,7 +46,23 @@ namespace eStavba.Controllers
             return View("Admin", problems);
         }
 
+        [Authorize]
         public IActionResult Delete(int id)
+        {
+            var problem = _context.ReportedProblems.Find(id);
+
+            if (problem == null)
+            {
+                return NotFound();
+            }
+
+            return View(problem);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public IActionResult DeleteConfirmed(int id)
         {
             var problem = _context.ReportedProblems.Find(id);
 

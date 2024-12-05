@@ -1,0 +1,39 @@
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+@model Bills
+
+@{
+    ViewData["Title"] = "Delete Bill";
+}
+
+<style>
+    body {
+        background-color: #f2f2f2;
+        background: url('https://img.freepik.com/premium-photo/white-background-with-white-background-black-text-that-says-white_689904-124037.jpg?w=740') no-repeat center center fixed;
+        background-size: cover;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        color: #000000;
+        text-align: center;
+    }
+</style>
+
+<div class="center-page" style="min-width: 500px;">
+    <div class="login-container">
+        <h2 class="heading">Delete Bill</h2>
+        <div>
+            <h3 class="heading3">@Model.BillType</h3>
+            <p class="created-on">Due: @Model.DueDate.ToString("MMMM dd, yyyy")</p>
+            <p class="created-on">Amount: @Model.Amount €</p>
+        </div>
+
+        <form asp-action="DeleteConfirmed" class="form" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+            <div class="centered">
+                <button type="submit" class="delete-button">Confirm Delete</button>
+            </div>
+        </form>
+    </div>
+</div>

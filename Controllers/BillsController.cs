@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Drawing.Drawing2D;
 using System.Security.Claims;
 using eStavba.Data;
+using Microsoft.EntityFrameworkCore;
 
 [Authorize]
 public class BillsController : Controller
@@ -79,22 +80,36 @@ public class BillsController : Controller
     }
 
     [Authorize]
-    [HttpPost]
-    public IActionResult Delete(int id)
-    {
-        var billToDelete = _context.Bills.Find(id);
-
-        if (billToDelete == null)
+        public IActionResult Delete(int id)
         {
-            return NotFound(); 
+            var bill = _context.Bills.Find(id);
+
+            if (bill == null)
+            {
+                return NotFound();
+            }
+
+            return View(bill);
         }
 
-        _context.Bills.Remove(billToDelete);
-        _context.SaveChanges();
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize]
+    public IActionResult DeleteConfirmed(int id)
+        {
+            var bill = _context.Bills  
+                .FirstOrDefault(t => t.Id == id);
 
-        return RedirectToAction("MyBills");
-    }
+            if (bill == null)
+            {
+                return NotFound();
+            }
 
+            _context.Bills.Remove(bill);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
 
     public IActionResult ReportNewBill(string userId, string billType, decimal amount, DateTime dueDate)
     {
