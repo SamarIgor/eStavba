@@ -12,8 +12,8 @@ using eStavba.Data;
 namespace eStavba.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241205151823_AddRevotingState")]
-    partial class AddRevotingState
+    [Migration("20241205210617_AddUserTableFixed")]
+    partial class AddUserTableFixed
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -326,6 +326,10 @@ namespace eStavba.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -377,6 +381,8 @@ namespace eStavba.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -486,6 +492,19 @@ namespace eStavba.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("RoleAssignments");
+                });
+
+            modelBuilder.Entity("User", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasDiscriminator().HasValue("User");
                 });
 
             modelBuilder.Entity("eStavba.Models.Candidate", b =>

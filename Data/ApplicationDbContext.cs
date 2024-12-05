@@ -21,5 +21,7 @@ namespace eStavba.Data
         public DbSet<ElectionModel> Elections { get; set; }
         public DbSet<RoleAssignment> RoleAssignments { get; set; }
         public DbSet<Vote> Votes { get; set; } 
+        public DbSet<User> Users { get; set; }
+
     }
 }

@@ -12,7 +12,7 @@ using eStavba.Data;
 namespace eStavba.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241205203628_AddUserTable")]
+    [Migration("20241205210042_AddUserTable")]
     partial class AddUserTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

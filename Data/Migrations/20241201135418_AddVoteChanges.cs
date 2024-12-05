@@ -8,9 +8,16 @@ namespace eStavba.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "Votes",
-                table: "Candidate");
+            migrationBuilder.Sql(@"
+                IF EXISTS (
+                    SELECT 1 
+                    FROM sys.columns 
+                    WHERE Name = N'Votes' AND Object_ID = Object_ID(N'Candidate')
+                )
+                BEGIN
+                    ALTER TABLE [Candidate] DROP COLUMN [Votes];
+                END
+            ");
 
             migrationBuilder.AlterColumn<int>(
                 name: "VoteType",
