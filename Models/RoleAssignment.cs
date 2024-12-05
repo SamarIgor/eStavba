@@ -15,3 +15,6 @@ public class RoleAssignment
     public IdentityRole Role { get; set; } // Navigation Property
     public IdentityUser User { get; set; } // Navigation Property
 }
+
+
+

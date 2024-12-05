@@ -87,13 +87,14 @@ namespace eStavba.Controllers
 
                 return View("Index");
 
-            } else if (lastElection.State == ElectionState.Ongoing) {
+            } else if (lastElection.State == ElectionState.Ongoing 
+                    || lastElection.State == ElectionState.ReVoting) 
+            {
+                ViewBag.candidates = lastElection.Candidates;
+                ViewBag.election = lastElection;
 
-                if (hasVoted == 0) {
-                    ViewBag.candidates = lastElection.Candidates;
-                    return View("Vote");
-                }
-
+                if (hasVoted == 0) return View("Vote");
+                
                 var candidatesWithVotes = lastElection.Candidates
                     .Select(candidate => new
                     {
@@ -122,7 +123,20 @@ namespace eStavba.Controllers
                         _context.Update(lastElection);
                         await _context.SaveChangesAsync();
 
+                        foreach (var candidate in lastElection.Candidates)
+                        {
+                            var candidateVotes = _context.Votes.Where(v => v.CandidateId == candidate.Id);
+                            _context.Votes.RemoveRange(candidateVotes); // Reset the votes
+                        }
+                        await _context.SaveChangesAsync();
+
+                        lastElection.State = ElectionState.ReVoting;
+
+                        _context.Update(lastElection);
+                        await _context.SaveChangesAsync();
+                        
                         ViewBag.candidates = lastElection.Candidates;
+                        ViewBag.election = lastElection;
                         return View("Vote");
 
                     } else {
@@ -141,6 +155,7 @@ namespace eStavba.Controllers
                 var userRoleId = _context.Roles.FirstOrDefault(r => r.NormalizedName == "MEMBER").Id;
                 var adminUserId = _context.UserRoles.FirstOrDefault(u => u.RoleId == adminRoleId).UserId;
                 var election = _context.Elections.FirstOrDefault(x => x.CurrentHouseManager == currentAdmin.Email);
+
                 if (ViewBag.election == null) ViewBag.election = election;
 
                 if (lastElection.State == ElectionState.Completed) {
@@ -152,14 +167,12 @@ namespace eStavba.Controllers
                     var winnerUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == winner.UserId);
                     var isWinnerAdmin = await _userManager.IsInRoleAsync(winnerUser, "Admin");
 
-                    if (winner != null && winner.UserId != adminUserId && !isWinnerAdmin) 
+                    if (winner != null) 
                     {
 
                         var isAdminMember = await _userManager.IsInRoleAsync(currentAdmin, "Admin");
-                        if (isAdminMember)
-                        {
-                            await _roleService.AssignRole(currentAdmin.Id, userRoleId);
-                        }
+                        await _roleService.AssignRole(currentAdmin.Id, userRoleId);
+
 
                         // Assign the "Admin" role to the winner
                         await _roleService.AssignRole(winner.UserId, adminRoleId);
@@ -198,6 +211,13 @@ namespace eStavba.Controllers
             return View();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> AreYouSureToPropose() {
+            if (Request.Form.ContainsKey("confirmValue") && Request.Form["confirmValue"] == "true") 
+                return await ProposeElection();
+            else return View();
+        }
+
         // POST: Propose a new election if admin has served for 3+ months
         [HttpPost]
         public async Task<IActionResult> ProposeElection()
@@ -229,6 +249,8 @@ namespace eStavba.Controllers
 
                 ViewBag.election = election;
                 ViewBag.endDate = election.EndDate;
+                // set electionVote to true on default. He proposed it, duuh
+                ViewBag.iDo = "Yes";
 
                 _context.Elections.Add(election);
                 await _context.SaveChangesAsync();

@@ -48,7 +48,8 @@ namespace eStavba.Models
         NotStarted,
         YesNo,
         Ongoing,
-        Completed
+        Completed,
+        ReVoting
     }
 
     public class Vote

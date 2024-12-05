@@ -1,3 +1,27 @@
+@{
+    int state = (int) ViewBag.election.State;
+}
+
+@if (state == 4)
+{
+<div class="alert alert-warning text-center" 
+     style="padding: 20px; border-radius: 8px; font-size: 16px; background-color: #fff3cd; display: flex; flex-direction: column; align-items: center;">
+    <h4 style="font-weight: bold; margin-bottom: 15px;">It's a tie!</h4>
+    <p style="margin-bottom: 15px;">The following candidates have received the same number of votes:</p>
+    <ul style="list-style-type: none; padding: 0; margin: 0 0 15px 0; display: flex; flex-direction: column; gap: 10px;">
+        @foreach (var candidate in ViewBag.Candidates)
+        {
+            <li style="font-size: 18px; font-weight: bold; text-align: center;">
+                <i class="fas fa-user" style="color: #007bff; margin-right: 10px;"></i>@candidate.Name
+            </li>
+        }
+    </ul>
+    <p style="margin-top: 15px;">Please cast your vote to help determine the next house manager.</p>
+</div>
+
+
+}
+
 <div class="container mt-4">
     <div class="login-container">
         <div class="heading">
