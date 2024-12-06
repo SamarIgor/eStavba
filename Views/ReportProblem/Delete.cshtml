@@ -1,0 +1,53 @@
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+@model ReportProblemModel
+
+@{
+    ViewData["Title"] = "Delete Problem";
+}
+
+<style>
+    body {
+        background-color: #f2f2f2;
+        background: url('https://img.freepik.com/premium-photo/white-background-with-white-background-black-text-that-says-white_689904-124037.jpg?w=740') no-repeat center center fixed;
+        background-size: cover;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        color: #000000;
+        text-align: center;
+    }
+</style>
+
+<div class="center-page" >
+    <div class="bubble-container" style="text-align: left;">
+        <div class="title-container" style="justify-content: center;">
+            <h2 class="heading">Delete Problem</h2>
+        </div>
+        <h3 class="heading3" style="text-align: left;">@($"{Model.FirstName} {Model.LastName}")</h3>
+        <p><strong>Email:</strong> @Model.Email</p>
+        <p><strong>Phone Number:</strong> @Model.PhoneNumber</p>
+        <p><strong>Apartment Number:</strong> @Model.ApartmentNumber</p>
+        <div class="problem-description-container">
+            @if (Model.ProblemDescription.Length > 200)
+            {
+                <p><strong>Problem Description:</strong></p>
+                <div class="problem-description-text scrollable-text">
+                    @Model.ProblemDescription
+                </div>
+            }
+            else
+            {
+                <p><strong>Problem Description:</strong> @Model.ProblemDescription</p>
+            }
+        </div>
+
+        <form asp-action="DeleteConfirmed" class="form" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+            <div class="centered">
+                <button type="submit" class="delete-button">Confirm Delete</button>
+            </div>
+        </form>
+    </div>
+</div>

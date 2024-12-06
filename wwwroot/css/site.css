@@ -220,6 +220,9 @@ body {
   justify-content: space-between;
   align-items: center;
   text-align: center;
+  word-wrap: break-word;
+  overflow-wrap: break-word; 
+  overflow: hidden; 
 }
 
 /* Delete (bin) button & Edit (pencil) button */
@@ -462,6 +465,27 @@ body {
   justify-content: center;
   text-align: center;
   flex-direction: column; /* Ensures items stack vertically */
+}
+
+.problem-description-container {
+  margin-top: 10px;
+}
+
+.problem-description-text {
+  font-size: 16px; /* Adjust text size if needed */
+}
+
+.scrollable-text {
+  max-height: 200px; /* Adjust the height according to your preference */
+  overflow-y: scroll; /* Enables vertical scrolling */
+  word-wrap: break-word; /* Ensure text breaks properly */
+  padding-left: 10px; /* Optional padding to avoid the text being cut off at the right */
+  padding-right: 10px; 
+  font-size: 16px; /* Adjust text size if needed */
+  border: 1px solid #ddd; /* Optional: adds a border to the scrollable area */
+  border-radius: 10px; /* Optional: rounds the corners */
+  letter-spacing: 0.5px; /* Adjust letter spacing (increase or decrease value) */
+  line-height: 1.8; 
 }
 
 
