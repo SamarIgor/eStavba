@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
+using eStavba.Models;
 
 public class RoleAssignment
 {
@@ -13,7 +14,7 @@ public class RoleAssignment
     public DateTime AssignedDate { get; set; } // Date the role was assigned
 
     public IdentityRole Role { get; set; } // Navigation Property
-    public IdentityUser User { get; set; } // Navigation Property
+    public virtual User? User { get; set;} // Navigation Property
 }
 
 

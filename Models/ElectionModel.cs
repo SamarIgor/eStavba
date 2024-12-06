@@ -61,7 +61,7 @@ namespace eStavba.Models
         public ElectionModel Election { get; set; }
 
         public string UserId { get; set; }
-        public IdentityUser User { get; set; }
+        public virtual User? User { get; set;}
 
         public VoteType? VoteType { get; set; }
 

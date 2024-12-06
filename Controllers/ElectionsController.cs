@@ -14,12 +14,12 @@ namespace eStavba.Controllers
 {
     public class ElectionsController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _context;
 
         private readonly RoleService _roleService;
-        public ElectionsController(UserManager<IdentityUser> userManager, 
+        public ElectionsController(UserManager<User> userManager, 
         RoleManager<IdentityRole> roleManager, 
         ApplicationDbContext context, 
         RoleService roleService)
@@ -278,7 +278,7 @@ namespace eStavba.Controllers
                 ElectionId = lastElection.Id,
                 Election = lastElection,
                 UserId = currentUser.Id,
-                User = currentUser,
+                User = (User) currentUser,
                 VoteType = VoteType.Yes
             };
 
@@ -287,7 +287,7 @@ namespace eStavba.Controllers
                 ElectionId = lastElection.Id,
                 Election = lastElection,
                 UserId = currentUser.Id,
-                User = currentUser,
+                User = (User) currentUser,
                 VoteType = VoteType.No
             };
 
@@ -363,7 +363,7 @@ namespace eStavba.Controllers
                 ElectionId = lastElection.Id,
                 Election = lastElection,
                 UserId = currentUser.Id,
-                User = currentUser,
+                User = (User) currentUser,
                 CandidateId = candidateId
             };
 

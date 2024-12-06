@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services; // For IEmailSender
 using eStavba.Areas.Identity.Pages.Account;
 using eStavba.Services; // For RegisterConfirmationModel
+using eStavba.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
