@@ -391,7 +391,6 @@ body {
   padding: 25px 35px;
   border: 5px solid rgb(255, 255, 255);
   box-shadow: 0 0 30px 10px #ccd6af;
-  margin: 20px auto;
   font-family: 'Century Gothic';
   word-wrap: break-word;
   overflow-wrap: break-word; 
@@ -436,9 +435,7 @@ body {
   padding: 25px 35px;
   border: 5px solid rgb(255, 255, 255);
   box-shadow: 0 0 30px 10px #ccd6af;
-  margin: 20px auto;
   font-family: 'Century Gothic';
-  margin-bottom: 75px;
   word-wrap: break-word;
   overflow-wrap: break-word; 
   overflow: hidden; 
@@ -476,12 +473,12 @@ body {
 }
 
 .scrollable-text {
-  max-height: 200px; /* Adjust the height according to your preference */
+  max-height: 120px; /* Adjust the height according to your preference */
   overflow-y: scroll; /* Enables vertical scrolling */
   word-wrap: break-word; /* Ensure text breaks properly */
   padding-left: 10px; /* Optional padding to avoid the text being cut off at the right */
   padding-right: 10px; 
-  font-size: 16px; /* Adjust text size if needed */
+  font-size: 14px; /* Adjust text size if needed */
   border: 1px solid #ddd; /* Optional: adds a border to the scrollable area */
   border-radius: 10px; /* Optional: rounds the corners */
   letter-spacing: 0.5px; /* Adjust letter spacing (increase or decrease value) */
