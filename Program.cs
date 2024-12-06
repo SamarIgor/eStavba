@@ -5,6 +5,13 @@ using Microsoft.AspNetCore.Identity.UI.Services; // For IEmailSender
 using eStavba.Areas.Identity.Pages.Account;
 using eStavba.Services; // For RegisterConfirmationModel
 using eStavba.Models;
+using Azure.Security.KeyVault.Secrets;
+using Azure.Identity;
+using Microsoft.AspNetCore.DataProtection;
+using System.Security.Policy;
+
+var azureKeyUrl = "https://estavbakeyvault.vault.azure.net/";
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,12 +21,32 @@ builder.Services.AddSwaggerGen();
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("AzureConnection");
+
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
-builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration.GetSection("SendGrid"));
+
+try
+{
+    var keyClient = new SecretClient(new Uri (azureKeyUrl), new DefaultAzureCredential());
+    string secretName = "email-api-1";
+
+    var apiKey = keyClient.GetSecret(secretName).Value.ToString();
+    
+    builder.Services.Configure<AuthMessageSenderOptions>(options =>
+    {
+        options.SendGridKey = apiKey;
+    });
+
+}
+catch
+{
+    //Do nothing
+};
+
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
