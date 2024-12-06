@@ -31,6 +31,34 @@ namespace eStavba.Controllers
                 Replies = thread.Replies.ToList()
             }).ToList();
 
+            var userFullNamesThreads = new Dictionary<int, string>();
+
+            foreach (var thread in threads)
+            {
+                var fullName = _context.Users
+                    .Where(u => u.Id == thread.UserId)
+                    .Select(u => u.FirstName + " " + u.LastName) 
+                    .FirstOrDefault() ?? "Unknown User";
+                userFullNamesThreads[thread.Id] = fullName;
+            }
+
+            var userFullNamesReplies = new Dictionary<int, string>();
+
+            foreach (var thread in threads)
+            {
+                foreach (var reply in thread.Replies)
+                {
+                    var fullName = _context.Users
+                        .Where(u => u.Id == reply.UserId)
+                        .Select(u => u.FirstName + " " + u.LastName) 
+                        .FirstOrDefault() ?? "Unknown User";
+                    userFullNamesReplies[reply.Id] = fullName;
+                }
+            }
+
+            ViewBag.userFullNamesThreads = userFullNamesThreads;
+            ViewBag.userFullNamesReplies = userFullNamesReplies;
+
             return View(viewModelList);
         }
 
@@ -44,6 +72,11 @@ namespace eStavba.Controllers
             {
                 return NotFound();
             }
+
+            var usernameDictionary = thread.Replies
+                .ToDictionary(reply => reply.Id, reply => _context.Users.FirstOrDefault(u => u.Id == reply.UserId)?.UserName);
+
+            ViewBag.Usernames = usernameDictionary;
 
             var viewModel = new ForumThreadViewModel
             {
@@ -183,6 +216,11 @@ namespace eStavba.Controllers
                 ThreadId = threadId,
                 UserId = userId,
             };
+
+            var usernameDictionary = thread.Replies
+                .ToDictionary(reply => reply.Id, reply => _context.Users.FirstOrDefault(u => u.Id == reply.UserId)?.UserName);
+
+            ViewBag.Usernames = usernameDictionary;
 
             thread.Replies.Add(reply);
 
