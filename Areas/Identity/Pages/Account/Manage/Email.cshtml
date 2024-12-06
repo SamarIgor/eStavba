@@ -14,13 +14,13 @@
         @if (Model.IsEmailConfirmed)
             {
                 <div class="form-floating" style="width: 300px;">
-                    <input asp-for="Email" class="reply-textfield" placeholder="Email" disabled />
+                    <input asp-for="Email" class="reply-textfield" placeholder="Email" />
                 </div>
             }
             else
             {
                 <div class="form-floating" style="width: 300px;">
-                <input asp-for="Email" style="color: red;" class="reply-textfield" placeholder="Email" disabled />
+                <input asp-for="Email" style="color: red;" class="reply-textfield" placeholder="Email" />
                     <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="create-button">Send verification email</button>
                 </div>
             }
