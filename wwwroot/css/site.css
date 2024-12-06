@@ -454,14 +454,14 @@ body {
 }
 
 .center-page {
-  position: absolute;  /* Position the element relative to the viewport */
-  top: 50%;            /* Move to the vertical center */
-  left: 50%;           /* Move to the horizontal center */
-  transform: translate(-50%, -50%); /* Offset by half the width and height */
+  position: absolute;  
+  top: 50%;            
+  left: 50%;           
+  transform: translate(-50%, -50%); 
   align-items: center;
   justify-content: center;
   text-align: center;
-  flex-direction: column; /* Ensures items stack vertically */
+  flex-direction: column; 
 }
 
 .problem-description-container {
@@ -469,19 +469,19 @@ body {
 }
 
 .problem-description-text {
-  font-size: 16px; /* Adjust text size if needed */
+  font-size: 16px; 
 }
 
 .scrollable-text {
-  max-height: 120px; /* Adjust the height according to your preference */
-  overflow-y: scroll; /* Enables vertical scrolling */
-  word-wrap: break-word; /* Ensure text breaks properly */
-  padding-left: 10px; /* Optional padding to avoid the text being cut off at the right */
+  max-height: 120px; 
+  overflow-y: scroll; 
+  word-wrap: break-word; 
+  padding-left: 10px; 
   padding-right: 10px; 
-  font-size: 14px; /* Adjust text size if needed */
-  border: 1px solid #ddd; /* Optional: adds a border to the scrollable area */
-  border-radius: 10px; /* Optional: rounds the corners */
-  letter-spacing: 0.5px; /* Adjust letter spacing (increase or decrease value) */
+  font-size: 14px; 
+  border: 1px solid #ddd; 
+  border-radius: 10px; 
+  letter-spacing: 0.5px; 
   line-height: 1.8; 
 }
 
