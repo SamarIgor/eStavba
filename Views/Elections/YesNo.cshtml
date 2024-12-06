@@ -1,49 +1,51 @@
-<div class="container mt-4">
-    <div class="bubble-container" style="max-width: 750px;">
-        <div class="heading">
-            Voting for a New Admin Election
-        </div>
-        <div class="form">
-            <form method="post" asp-action="VoteForElection" class="d-flex flex-column align-items-center gap-3">
-                <div class="form-group">
-                    <p class="heading4" style="margin-bottom: -15px;">Do you vote for a new election?</p>
-                    <div class="d-flex gap-4 justify-content-center">
-                        <div class="form-check">
-                            <input type="radio" id="voteYes" name="electionVote" 
-                            value="Yes" class="form-check-input" required @(ViewBag.iDo == "Yes" ? "checked" : "")>
-                            <label class="form-check-label" for="voteYes">
-                                <i class="fas fa-check-circle text-success"></i> Yes
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input type="radio" id="voteNo" name="electionVote" value="No" class="form-check-input" required>
-                            <label class="form-check-label" for="voteNo">
-                                <i class="fas fa-times-circle text-danger"></i> No
-                            </label>
-                        </div>
+<style>
+    body {
+        text-align: center;
+    }
+</style>
+
+<div class="login-container center-page" style="min-width: 750px;">
+    <div class="heading">Voting for a New Admin Election</div>
+    <div class="form">
+        <form method="post" asp-action="VoteForElection" class="d-flex flex-column align-items-center gap-3">
+            <div class="form-group">
+                <p class="heading4" style="margin-bottom: -15px;">Do you vote for a new election?</p>
+                <div class="d-flex gap-4 justify-content-center">
+                    <div class="form-check">
+                        <input type="radio" id="voteYes" name="electionVote" 
+                        value="Yes" class="form-check-input" required @(ViewBag.iDo == "Yes" ? "checked" : "")>
+                        <label class="form-check-label" for="voteYes">
+                            <i class="fas fa-check-circle text-success"></i> Yes
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" id="voteNo" name="electionVote" value="No" class="form-check-input" required>
+                        <label class="form-check-label" for="voteNo">
+                            <i class="fas fa-times-circle text-danger"></i> No
+                        </label>
                     </div>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <p class="heading4" style="margin-bottom: -15px;">Would you like to propose yourself as a candidate?</p>
-                    <div class="d-flex gap-4 justify-content-center">
-                        <div class="form-check">
-                            <input type="radio" id="proposeYes" name="candidateVote" value="Yes" class="form-check-input" required>
-                            <label class="form-check-label" for="proposeYes">
-                                <i class="fas fa-user-check text-primary"></i> Yes
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input type="radio" id="proposeNo" name="candidateVote" value="No" class="form-check-input" required>
-                            <label class="form-check-label" for="proposeNo">
-                                <i class="fas fa-user-times text-secondary"></i> No
-                            </label>
-                        </div>
+            <div class="form-group">
+                <p class="heading4" style="margin-bottom: -15px;">Would you like to propose yourself as a candidate?</p>
+                <div class="d-flex gap-4 justify-content-center">
+                    <div class="form-check">
+                        <input type="radio" id="proposeYes" name="candidateVote" value="Yes" class="form-check-input" required>
+                        <label class="form-check-label" for="proposeYes">
+                            <i class="fas fa-user-check text-primary"></i> Yes
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" id="proposeNo" name="candidateVote" value="No" class="form-check-input" required>
+                        <label class="form-check-label" for="proposeNo">
+                            <i class="fas fa-user-times text-secondary"></i> No
+                        </label>
                     </div>
                 </div>
+            </div>
 
-                <button type="submit" class="create-button" style="margin-top: 15px;">Submit</button>
-            </form>
-        </div>
+            <button type="submit" class="create-button" style="margin-top: 15px;">Submit</button>
+        </form>
     </div>
 </div>

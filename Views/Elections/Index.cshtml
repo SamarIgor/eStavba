@@ -5,6 +5,13 @@
 
     <link href="~/css/site.css" rel="stylesheet" />
 </head>
+
+<style>
+    body {
+        text-align: center;
+    }
+</style>
+
 <body>
     <div class="center-page" style="min-width: 500px;">
         <div class="login-container">
@@ -50,7 +57,7 @@
             else if (state == 1)
             {
                 <h3 class="heading3" style="margin-top: 50px; margin-bottom: 20px;">Voting Results</h3>
-                <div class="progress" style="height: 30px; width: 800px; margin: 0 auto; display: flex;">
+                <div class="progress" style="height: 30px; min-width: 400px; margin: 0 auto; display: flex;">
                     <div class="progress-bar bg-success" role="progressbar" style="width: @yesPercentage%;" 
                         aria-valuenow="@yesPercentage" aria-valuemin="0" aria-valuemax="100">
                         Yes: @yesPercentage%
@@ -117,6 +124,3 @@
         return false;
     }
 </script>
-
-
-

@@ -1,3 +1,9 @@
+<style>
+    body {
+        text-align: center;
+    }
+</style>
+
 @{
     int state = (int) ViewBag.election.State;
 }
@@ -18,34 +24,28 @@
     </ul>
     <p style="margin-top: 15px;">Please cast your vote to help determine the next house manager.</p>
 </div>
-
-
 }
 
-<div class="container mt-4">
-    <div class="login-container">
-        <div class="heading">
-            Vote for a New Admin
-        </div>
-        <div class="form">
-            <form method="post" asp-action="SubmitVote" class="d-flex flex-column align-items-center gap-3">
-                <div class="form-group">
-                    <p class="heading4" style="margin-bottom: -5px;">Choose a candidate:</p>
-                    <select id="candidate" name="candidateId" class="reply-textfield">
-                        @foreach (var candidate in ViewBag.candidates)
-                        { 
-                            <option value="@candidate.Id">@candidate.Name</option>
-                        }
-                    </select>
-                </div>
-                <button type="submit" class="create-button" style="margin-top: 15px;">Vote</button>
-            </form>
-        </div>
-        @if (TempData["Message"] != null)
-        {
-            <div class="heading4" style="margin-top: 20px; text-align: center; font-size: 18px; color: #ff0000;">
-                @TempData["Message"]
+<div class="login-container center-page">
+    <div class="heading">Vote for a New Admin</div>
+    <div class="form">
+        <form method="post" asp-action="SubmitVote" class="d-flex flex-column align-items-center gap-3">
+            <div class="form-group">
+                <p class="heading4" style="margin-bottom: -5px;">Choose a candidate:</p>
+                <select id="candidate" name="candidateId" class="reply-textfield">
+                    @foreach (var candidate in ViewBag.candidates)
+                    { 
+                        <option value="@candidate.Id">@candidate.Name</option>
+                    }
+                </select>
             </div>
-        }
+            <button type="submit" class="create-button" style="margin-top: 15px;">Vote</button>
+        </form>
     </div>
+    @if (TempData["Message"] != null)
+    {
+        <div class="heading4" style="margin-top: 20px; text-align: center; font-size: 18px; color: #ff0000;">
+            @TempData["Message"]
+        </div>
+    }
 </div>
