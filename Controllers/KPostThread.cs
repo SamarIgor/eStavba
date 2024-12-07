@@ -56,8 +56,12 @@ namespace eStavba.Controllers
                 }
             }
 
+            var ads = _context.Ads.ToList();
+
             ViewBag.userFullNamesThreads = userFullNamesThreads;
             ViewBag.userFullNamesReplies = userFullNamesReplies;
+            ViewBag.Ads = ads.OrderBy(a => a.Priority).ToList();
+            
 
             return View(viewModelList);
         }

@@ -1,0 +1,74 @@
+@model eStavba.Models.AdModel
+
+@{
+    ViewData["Title"] = "Delete Ad";
+}
+
+<style>
+    body {
+        background-color: #f2f2f2;
+        background: url('https://img.freepik.com/premium-photo/white-background-with-white-background-black-text-that-says-white_689904-124037.jpg?w=740') no-repeat center center fixed;
+        background-size: cover;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        color: #000000;
+        text-align: center;
+    }
+
+    .center-page {
+        background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent background */
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 90%;
+        max-width: 500px;
+        margin: 20px auto; /* Center the form and add margin */
+    }
+
+    .login-container {
+        text-align: left;
+    }
+
+    .reply-textfield, .create-button {
+        width: 100%;
+        padding: 8px; /* Reduced padding */
+        margin: 8px 0; /* Reduced margin */
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px; /* Reduced font size */
+    }
+
+    .delete-button {
+        background-color: #ff0000;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        padding: 10px 20px;
+        border-radius: 4px;
+    }
+
+    .delete-button:hover {
+        background-color: #990000;
+    }
+</style>
+
+<div class="center-page">
+    <div class="login-container">
+        <h2 class="heading">Delete Ad</h2>
+        <div>
+            <h3 class="heading3">@Model.PhoneNumber</h3>
+            <p class="created-on">Created on: @Model.StartDate.ToString("MMMM dd, yyyy")</p>
+            <hr />
+            <p>@Model.Description</p>
+        </div>
+
+        <form asp-action="DeleteConfirmed" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+            <div class="centered">
+                <button type="submit" class="delete-button">Confirm Delete</button>
+            </div>
+        </form>
+    </div>
+</div>

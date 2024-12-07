@@ -1,0 +1,89 @@
+@model eStavba.Models.AdModel
+
+@{
+    ViewData["Title"] = "Edit Ad";
+}
+
+<style>
+    .form-container {
+        background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent background */
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 90%;
+        max-width: 500px;
+        margin: 20px auto; /* Center the form and add margin */
+    }
+
+    .form-content {
+        text-align: left;
+    }
+
+    .form-field, .create-button {
+        width: 100%;
+        padding: 8px; /* Reduced padding */
+        margin: 8px 0; /* Reduced margin */
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px; /* Reduced font size */
+    }
+
+    .create-button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        padding: 10px 20px;
+        border-radius: 4px;
+    }
+
+    .create-button:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+@using (Html.BeginForm("Edit", "Ad", new { id = Model.Id }, FormMethod.Post))
+{
+    <div class="form-container">
+        <div class="form-content">
+            <h2 class="heading">Edit Ad</h2>
+            <div>
+                <input asp-for="StartDate" type="date" class="form-field" value="@Model.StartDate.ToString("yyyy-MM-dd")" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+            <div>
+                <input asp-for="EndDate" type="date" class="form-field" value="@Model.EndDate.ToString("yyyy-MM-dd")" />
+                <span asp-validation-for="EndDate" class="text-danger"></span>
+            </div>
+            <div>
+                <input asp-for="WebsiteLink" placeholder="Website Link" class="form-field" value="@Model.WebsiteLink" />
+                <span asp-validation-for="WebsiteLink" class="text-danger"></span>
+            </div>
+            <div>
+                <input asp-for="PhoneNumber" placeholder="Phone Number" class="form-field" value="@Model.PhoneNumber" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div>
+                <input asp-for="Picture" id="pictureLink" placeholder="Picture Link" class="form-field" value="@Model.Picture" />
+                <span asp-validation-for="Picture" class="text-danger"></span>
+            </div>
+            <div>
+                <input asp-for="Priority" id="priority" placeholder="Priority" class="form-field" type="number" value="@Model.Priority" />
+                <span asp-validation-for="Priority" class="text-danger"></span>
+            </div>
+            <div>
+                <textarea asp-for="Description" id="description" placeholder="Description" class="form-field" rows="4">@Model.Description</textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div style="margin-top: 25px;">
+                <button type="submit" class="create-button">Save Changes</button>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

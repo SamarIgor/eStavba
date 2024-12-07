@@ -3,8 +3,32 @@
 @{
     ViewData["Title"] = "Announcements";
     var isAdminUser = User.IsInRole("Admin");
-    // var isAdminUser = string.Equals(User?.Identity?.Name, "estavba@gmail.com", StringComparison.OrdinalIgnoreCase);
+
+    // Retrieve ads from ViewBag
+    var ads = ViewBag.Ads as List<AdModel>;
+
+    // Split ads into two lists
+    var leftAds = new List<AdModel>();
+    var rightAds = new List<AdModel>();
+
+    if (ads != null)
+    {
+        for (int i = 0; i < ads.Count; i++)
+        {
+            if (i % 2 == 0)
+            {
+                leftAds.Add(ads[i]);
+            }
+            else
+            {
+                rightAds.Add(ads[i]);
+            }
+        }
+    }
 }
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <style>
     body {
@@ -17,66 +41,224 @@
         color: #000000;
         text-align: center;
     }
+
+    .container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 20px;
+    }
+
+    .ads-container {
+        width: 20%;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px; /* Add padding to create space */
+    }
+
+    .announcements-container {
+        width: 60%;
+        padding: 20px; /* Add padding to create space */
+    }
+
+    .ad-card {
+        background-color: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    .ad-card img {
+        max-width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+
+    .ad-card .details {
+        padding-top: 10px;
+    }
+
+    .ad-card p {
+        margin: 5px 0;
+        font-size: 14px;
+    }
+
+    .ad-card a {
+        text-decoration: none;
+        color: #007bff;
+        font-size: 14px;
+    }
+
+    .ad-card a:hover {
+        text-decoration: underline;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .create-button {
+        margin: 20px 0;
+        padding: 10px 20px;
+        background-color: #9da87c;
+        color: white;
+        border: none;
+        border-radius: 7px;
+        text-align: center;
+        cursor: pointer;
+        font-size: 17px;
+        letter-spacing: 4px;
+        font-weight: 700;
+        font-family: 'Century Gothic';
+        text-transform: uppercase;
+        transition: 0.5s;
+        transition-property: box-shadow;
+        box-shadow: 0 0 25px #9da87c;
+    }
+
+    .create-button:hover {
+        box-shadow: 0 0 5px #9da87c,
+                     0 0 25px #9da87c,
+                     0 0 50px #9da87c,
+                     0 0 100px #9da87c;
+    }
+
+    .edit-button, .bin-button {
+        background-color: #9da87c;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 7px;
+        text-decoration: none;
+        font-size: 15px;
+        letter-spacing: 4px;
+        font-weight: 400;
+        font-family: 'Century Gothic';
+        text-transform: uppercase;
+        transition: 0.5s;
+        transition-property: box-shadow;
+        box-shadow: 0 0 25px #9da87c;
+    }
+
+    .edit-button:hover, .bin-button:hover {
+        box-shadow: 0 0 5px #9da87c,
+                     0 0 25px #9da87c,
+                     0 0 50px #9da87c,
+                     0 0 100px #9da87c;
+    }
+
+    .delete-button {
+        background-color: #ff0000;
+        box-shadow: 0 0 25px #ff0000;
+    }
+
+    .delete-button:hover {
+        box-shadow: 0 0 5px #ff0000,
+                     0 0 25px #ff0000,
+                     0 0 50px #ff0000,
+                     0 0 100px #ff0000;
+    }
 </style>
 
-<h2 class="heading">Announcements</h2>
+<h2 style="text-align: center;" class="heading">Announcements</h2>
 
-<div style="text-align: center;">
+<div class="button-container">
     @if (isAdminUser)
     {
-        <div class="centered">
-            <button asp-action="Create" onclick="location.href='@Url.Action("Create", "KPostAnnouncement")'" class="create-button">Create New</button>
-        </div>
+        <button class="create-button" onclick="location.href='@Url.Action("Create", "KPostAnnouncement")'">Create New</button>
     }
 </div>
-<br /><br />
-@foreach (var announcement in Model)
-{
-    <div class="bubble-container">
-        <div>
-            <h3 class="heading3">@announcement.Title</h3>
-            <p class="created-on">@announcement.DatePosted.ToString("MMMM dd, yyyy")</p>
-            <hr></hr>
-            <p>@announcement.Content</p>
-        </div>
-        @if (isAdminUser)
+
+<div class="container">
+    <div class="ads-container">
+        @if (leftAds != null)
         {
-            <div class="title-container">
-                <a class="edit-button" href="@Url.Action("Edit", "KPostAnnouncement", new { id = announcement.Id })">
-                    <svg height="1em" viewBox="0 0 512 512">
-                        <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path>
-                    </svg>
-                </a>
-                <a class="bin-button" href="@Url.Action("Delete", "KPostAnnouncement", new { id = announcement.Id })">
-                    <svg class="bin-top"
-                         viewBox="0 0 39 7"
-                         fill="none"
-                         xmlns="http://www.w3.org/2000/svg">
-                        <line y1="5" x2="39" y2="5" stroke="white" stroke-width="4"></line>
-                        <line x1="12"
-                              y1="1.5"
-                              x2="26.0357"
-                              y2="1.5"
-                              stroke="white"
-                              stroke-width="3"></line>
-                    </svg>
-                    <svg class="bin-bottom"
-                         viewBox="0 0 33 39"
-                         fill="none"
-                         xmlns="http://www.w3.org/2000/svg">
-                        <mask id="path-1-inside-1_8_19" fill="white">
-                            <path d="M0 0H33V35C33 37.2091 31.2091 39 29 39H4C1.79086 39 0 37.2091 0 35V0Z"></path>
-                        </mask>
-                        <path d="M0 0H33H0ZM37 35C37 39.4183 33.4183 43 29 43H4C-0.418278 43 -4 39.4183 -4 35H4H29H37ZM4 43C-0.418278 43 -4 39.4183 -4 35V0H4V35V43ZM37 0V35C37 39.4183 33.4183 43 29 43V35V0H37Z"
-                              fill="white"
-                              mask="url(#path-1-inside-1_8_19)"></path>
-                        <path d="M12 6L12 29" stroke="white" stroke-width="4"></path>
-                        <path d="M21 6V29" stroke="white" stroke-width="4"></path>
-                    </svg>
-                </a>
+            @foreach (var ad in leftAds)
+            {
+                <div class="ad-card">
+                    <!-- Ad Image -->
+                    <img src="@ad.Picture" alt="Ad Image" />
+                    <div class="details">
+                        <p><strong>Phone:</strong> @ad.PhoneNumber</p>
+                        <p><strong>Description:</strong> @ad.Description @if (!string.IsNullOrEmpty(ad.WebsiteLink)) { <a href="@ad.WebsiteLink" target="_blank">Click here</a> } else { @ad.WebsiteLink }</p>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    <div class="announcements-container">
+        @foreach (var announcement in Model)
+        {
+            <div class="bubble-container">
+                <div>
+                    <h3 class="heading3">@announcement.Title</h3>
+                    <p class="created-on">@announcement.DatePosted.ToString("MMMM dd, yyyy")</p>
+                    <hr></hr>
+                    <p>@announcement.Content</p>
+                </div>
+                @if (isAdminUser)
+                {
+                    <div class="title-container">
+                        <a class="edit-button" href="@Url.Action("Edit", "KPostAnnouncement", new { id = announcement.Id })">
+                            <svg height="1em" viewBox="0 0 512 512">
+                                <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path>
+                            </svg>
+                        </a>
+                        <a class="bin-button delete-button" href="@Url.Action("Delete", "KPostAnnouncement", new { id = announcement.Id })">
+                            <svg class="bin-top"
+                                 viewBox="0 0 39 7"
+                                 fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <line y1="5" x2="39" y2="5" stroke="white" stroke-width="4"></line>
+                                <line x1="12"
+                                      y1="1.5"
+                                      x2="26.0357"
+                                      y2="1.5"
+                                      stroke="white"
+                                      stroke-width="3"></line>
+                            </svg>
+                            <svg class="bin-bottom"
+                                 viewBox="0 0 33 39"
+                                 fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <mask id="path-1-inside-1_8_19" fill="white">
+                                    <path d="M0 0H33V35C33 37.2091 31.2091 39 29 39H4C1.79086 39 0 37.2091 0 35V0Z"></path>
+                                </mask>
+                                <path d="M0 0H33H0ZM37 35C37 39.4183 33.4183 43 29 43H4C-0.418278 43 -4 39.4183 -4 35H4H29H37ZM4 43C-0.418278 43 -4 39.4183 -4 35V0H4V35V43ZM37 0V35C37 39.4183 33.4183 43 29 43V35V0H37Z"
+                                      fill="white"
+                                      mask="url(#path-1-inside-1_8_19)"></path>
+                                <path d="M12 6L12 29" stroke="white" stroke-width="4"></path>
+                                <path d="M21 6V29" stroke="white" stroke-width="4"></path>
+                            </svg>
+                        </a>
+                    </div>
+                }
             </div>
         }
     </div>
-}
 
-<br/>
+    <div class="ads-container">
+        @if (rightAds != null)
+        {
+            @foreach (var ad in rightAds)
+            {
+                <div class="ad-card">
+                    <!-- Ad Image -->
+                    <img src="@ad.Picture" alt="Ad Image" />
+                    <div class="details">
+                        <p><strong>Phone:</strong> @ad.PhoneNumber</p>
+                        <p><strong>Description:</strong> @ad.Description @if (!string.IsNullOrEmpty(ad.WebsiteLink)) { <a href="@ad.WebsiteLink" target="_blank">Click here</a> } else { @ad.WebsiteLink }</p>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

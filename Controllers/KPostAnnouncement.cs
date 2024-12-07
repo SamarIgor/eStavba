@@ -26,6 +26,8 @@ namespace eStavba.Controllers
         public async Task<IActionResult> Index()
         {
             var announcements = await _context.Announcement.ToListAsync();
+            var ads = await _context.Ads.ToListAsync();
+            ViewBag.Ads = ads.OrderBy(a => a.Priority).ToList();
             return View(announcements);
         }
 

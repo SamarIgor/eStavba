@@ -22,6 +22,6 @@ namespace eStavba.Data
         public DbSet<RoleAssignment> RoleAssignments { get; set; }
         public DbSet<Vote> Votes { get; set; } 
         public DbSet<User> Users { get; set; }
-
+        public DbSet<AdModel> Ads { get; set; }
     }
 }
